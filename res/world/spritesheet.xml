@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+
+<spritesheet id="world">
+
+	<sprite id="1" 	x="0" 	y="0" 	w="40" 	h="40" />
+	<sprite id="2" 	x="40" 	y="0" 	w="40" 	h="40" />
+	<sprite id="3" 	x="80" 	y="0" 	w="40" 	h="40" />
+	<sprite id="4" 	x="120"	y="0" 	w="40" 	h="40" />
+	<sprite id="5" 	x="160"	y="0" 	w="40" 	h="40" />
+	<sprite id="6" 	x="200"	y="0" 	w="40" 	h="40" />
+</spritesheet>
