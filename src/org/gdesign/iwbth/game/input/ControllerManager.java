@@ -7,6 +7,8 @@ import org.lwjgl.input.Controllers;
 
 public class ControllerManager {
 	
+	//TODO: Just a rudimentary implementation.
+	
 	protected static Controller controller;
 	
 	protected static int ACTIVE_CONTROLLER = 0;

@@ -2,17 +2,16 @@ package org.gdesign.iwbth.game.states;
 
 import org.gdesign.iwbth.game.audio.AudioManager;
 import org.gdesign.iwbth.game.entity.DebugMonitor;
-import org.gdesign.iwbth.game.entity.Entity;
 import org.gdesign.iwbth.game.entity.EntityManager;
-import org.gdesign.iwbth.game.entity.Player;
 import org.gdesign.iwbth.game.input.ControllerManager;
 import org.gdesign.iwbth.game.main.Game;
-import org.gdesign.iwbth.game.texture.TextureManager;
 import org.gdesign.iwbth.game.tilemap.TileMap;
 import org.lwjgl.input.Keyboard;
 
 
 public class GameStateRunning implements GameState {
+	
+	//TODO: Temporary testing environment. This will be changed dramatically.
 	
 	private DebugMonitor mon;
 	
@@ -31,6 +30,7 @@ public class GameStateRunning implements GameState {
 		currentMap = new TileMap("sad");
 		mon = new DebugMonitor(0, 0, Game.WIDTH, 150);
 		mon.setPlayerObject(EntityManager.getPlayer());
+		EntityManager.addEntity(mon);
 	}
 	
 	@Override
@@ -56,7 +56,7 @@ public class GameStateRunning implements GameState {
 	public void draw() {
 		currentMap.draw();
 		EntityManager.draw();
-		mon.draw();
+		//mon.draw();
 	}
 
 	@Override

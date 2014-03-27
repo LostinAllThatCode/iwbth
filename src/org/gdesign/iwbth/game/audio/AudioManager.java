@@ -9,8 +9,11 @@ import org.newdawn.slick.openal.AudioLoader;
 import org.newdawn.slick.util.ResourceLoader;
 
 public class AudioManager {
+	
+	//TODO: Just a rudimentary implementation.
 
-	private static final int SOUND_BACKGROUND_LOOP1 = 0;
+	public static final int SOUND_MUSIC_LOOP1 	= 0;	
+	public static final int SOUND_FX_JUMP 		= 1;
 	
 	private static ArrayList<Audio> sounds = new ArrayList<>();
 	private static Audio currentSound;
@@ -21,8 +24,8 @@ public class AudioManager {
 	public static boolean init(){
 		try {
 			sounds.add(AudioLoader.getAudio("OGG", ResourceLoader.getResourceAsStream("sound/bgmusic.ogg")));
-			
-			currentSound=sounds.get(SOUND_BACKGROUND_LOOP1);
+			sounds.add(AudioLoader.getAudio("OGG", ResourceLoader.getResourceAsStream("sound/jump.ogg")));
+			currentSound=sounds.get(0);
 			return true;
 		} catch (IOException e) {
 			System.err.println(e.getMessage());
@@ -46,6 +49,10 @@ public class AudioManager {
 	public static void setVolume(float vol){
 		currentSound.stop();
 		currentSound.playAsMusic(soundPitch, vol, true);
+	}
+	
+	public static void playFX(int sound){
+		sounds.get(sound).playAsSoundEffect(1,1,false);
 	}
 	
 	public static void close(){

@@ -6,6 +6,8 @@ import org.newdawn.slick.Color;
 
 public class DebugMonitor extends Entity{
 	
+	//TODO: Debug purpose only!
+	
 	public boolean showDebug = false;
 	public String debugDelta,debugFPS;
 	public Player player;

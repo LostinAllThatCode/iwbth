@@ -3,6 +3,7 @@ package org.gdesign.iwbth.game.entity;
 import static org.lwjgl.opengl.ARBTextureRectangle.GL_TEXTURE_RECTANGLE_ARB;
 import static org.lwjgl.opengl.GL11.*;
 
+import org.gdesign.iwbth.game.audio.AudioManager;
 import org.gdesign.iwbth.game.input.ControllerManager;
 import org.gdesign.iwbth.game.main.Game;
 import org.gdesign.iwbth.game.texture.Sprite;
@@ -10,6 +11,8 @@ import org.gdesign.iwbth.game.texture.SpriteSheet;
 
 public class Player extends Entity {	
 
+	//TODO: Cleaning up variables. Optimizing jump detection. Collision detection not implemented yet. Just rudimentary.
+	
 	private static final int PLAYER_ANIMATION_IDLE = 1;
 	private static final int PLAYER_ANIMATION_WALK = 2;
 	private static final int PLAYER_ANIMATION_JUMP = 3;
@@ -21,6 +24,7 @@ public class Player extends Entity {
 	private int facing = 1;
 	
 	private boolean isJumping = false;
+	private boolean canShoot = true;
 	
 	private float velY = 0;
 	private float velX = 0;
@@ -29,6 +33,7 @@ public class Player extends Entity {
 	private float currentJumpSpeed = 0;	
 
 	private long lastFrame = Game.getTime();
+	private long lastShot  = Game.getTime();
 	private int	 t = 0;
 	
 	public Player(int x, int y, SpriteSheet spritesheet) {
@@ -36,9 +41,18 @@ public class Player extends Entity {
 	}
 	
 	@Override
-	public void move(long delta) {	
+	public void move(long delta) {
+		if (ControllerManager.isShootPressed()) shoot(); else canShoot = true;	
+		
+		if (!isGrounded()) {
+			velY += gravity*delta;
+			if (velY > 0) currentAnimationState = PLAYER_ANIMATION_FALL;
+			if (velY < 0) currentAnimationState = PLAYER_ANIMATION_JUMP;
+		} 
+		
 		if (!isJumping){
 			if (ControllerManager.isJumpPressed()){
+				if (currentJumpSpeed == 0) AudioManager.playFX(AudioManager.SOUND_FX_JUMP);
 				currentJumpSpeed += 0.1f*delta;
 				if (currentJumpSpeed > maxJumpSpeed) {
 					currentJumpSpeed = maxJumpSpeed;
@@ -64,21 +78,8 @@ public class Player extends Entity {
 					currentJumpSpeed = maxJumpSpeed*0.75f;
 					velY = -currentJumpSpeed;
 					jumpc++;
+					AudioManager.playFX(AudioManager.SOUND_FX_JUMP);
 				}
-			}
-		}
-		
-		if (!isGrounded()) {
-			velY += gravity*delta;
-			if (velY > 0) currentAnimationState = PLAYER_ANIMATION_FALL;
-			if (velY < 0) currentAnimationState = PLAYER_ANIMATION_JUMP;
-		} else {
-			if (velY > 0){
-				currentAnimationState = PLAYER_ANIMATION_IDLE;
-				currentJumpSpeed = 0;			
-				jumpc = 0;
-				velY = 0;
-				if (!ControllerManager.isJumpPressed()) isJumping = false;
 			}
 		}
 
@@ -103,6 +104,14 @@ public class Player extends Entity {
 		}
 		
 		this.rect.translate((int) velX,(int) velY);
+		
+		if (isGrounded() && jumpc > 0) {
+			currentAnimationState = PLAYER_ANIMATION_IDLE;
+			currentJumpSpeed = 0;			
+			velY = 0;
+			jumpc = 0;
+			if (!ControllerManager.isJumpPressed()) isJumping = false;					
+		}
 	}
 	
 	private boolean  isGrounded(){
@@ -150,9 +159,10 @@ public class Player extends Entity {
 			        glVertex2f(rect.getX()+sprite.getWidth(), rect.getY());
 		        glEnd();
         	}
-	 
+        	
+        	glBindTexture(GL_TEXTURE_RECTANGLE_ARB, 0);
 	        glPopMatrix();
-	        glBindTexture(GL_TEXTURE_RECTANGLE_ARB, 0);
+	       
 		}
 	}
 	
@@ -165,7 +175,7 @@ public class Player extends Entity {
 		case 3:
 			return "PLAYER_ANIMATION_JUMP";
 		case 4:
-			return "PLAYER_ANIMATION_JUMP";
+			return "PLAYER_ANIMATION_FALL";
 		default:
 			return "NOT DEFINED YET";
 		}
@@ -224,6 +234,15 @@ public class Player extends Entity {
 	
 	public int getJumpCount(){
 		return jumpc;
+	}
+	
+	private void shoot(){
+		long time = Game.getTime();
+		if (time - lastShot >= 25 && canShoot) {
+			lastShot = time;
+			canShoot = false;
+			EntityManager.addShot(this.rect.getX()+6, this.rect.getY()+10, facing);
+		}
 	}
 	
 }

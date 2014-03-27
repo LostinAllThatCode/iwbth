@@ -14,4 +14,5 @@
 	<sprite id="11"	x="24"	y="68"	w="24" 	h="26" />
 	<sprite id="12"	x="4"	y="100"	w="28" 	h="26" />
 	<sprite id="13"	x="33"	y="100"	w="28" 	h="26" />
+	<sprite id="14"	x="90"	y="265"	w="5" 	h="5" />
 </spritesheet>

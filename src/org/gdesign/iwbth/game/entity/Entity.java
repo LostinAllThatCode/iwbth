@@ -31,13 +31,14 @@ public class Entity {
 	
 	public void draw(){
 		if (spritesheet == null){
-			glColor3f(1, 0, 0);
+			glColor3f(0, 0, 1);
 	        glBegin(GL_QUADS);
 		        glVertex2f(rect.getX(),  rect.getY());
 		        glVertex2f(rect.getX(),  rect.getY() + rect.getHeight());
 		        glVertex2f(rect.getX() + rect.getWidth(), rect.getY() + rect.getHeight());
 		        glVertex2f(rect.getX() + rect.getWidth(), rect.getY());
 	        glEnd();
+	        glColor3f(1, 1, 1);
 		} else {
 			Sprite sprite = spritesheet.getSprite(1);
 			
