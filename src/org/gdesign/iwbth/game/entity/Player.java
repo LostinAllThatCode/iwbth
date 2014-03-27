@@ -25,7 +25,7 @@ public class Player extends Entity {
 	private float velY = 0;
 	private float velX = 0;
 	private float gravity = 0.03f;
-	private float maxJumpSpeed = 12;
+	private float maxJumpSpeed = 10;
 	private float currentJumpSpeed = 0;	
 
 	private long lastFrame = Game.getTime();
@@ -66,22 +66,20 @@ public class Player extends Entity {
 					jumpc++;
 				}
 			}
-
-			
-			velY += gravity*delta;
-			currentAnimationState = PLAYER_ANIMATION_JUMP;
-			}
+		}
 		
-		if (velY > 0) {
-			currentAnimationState = PLAYER_ANIMATION_FALL;
-			
-			if (isGrounded()) {
+		if (!isGrounded()) {
+			velY += gravity*delta;
+			if (velY > 0) currentAnimationState = PLAYER_ANIMATION_FALL;
+			if (velY < 0) currentAnimationState = PLAYER_ANIMATION_JUMP;
+		} else {
+			if (velY > 0){
 				currentAnimationState = PLAYER_ANIMATION_IDLE;
-				currentJumpSpeed = 0;
-				velY = 0;
+				currentJumpSpeed = 0;			
 				jumpc = 0;
+				velY = 0;
 				if (!ControllerManager.isJumpPressed()) isJumping = false;
-			}	
+			}
 		}
 
 		if (velX != 0){

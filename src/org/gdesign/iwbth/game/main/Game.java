@@ -6,6 +6,8 @@ import static org.lwjgl.opengl.GL11.*;
 import java.awt.Font;
 
 import org.gdesign.iwbth.game.audio.AudioManager;
+import org.gdesign.iwbth.game.entity.EntityManager;
+import org.gdesign.iwbth.game.entity.Player;
 import org.gdesign.iwbth.game.input.ControllerManager;
 import org.gdesign.iwbth.game.states.GameStateManager;
 import org.gdesign.iwbth.game.texture.TextureManager;
@@ -23,8 +25,6 @@ public class Game {
 
 	public static int WIDTH,HEIGHT,TSIZE;
 	public static GameStateManager GSM;
-	public static TextureManager TM;
-	
 	
 	protected static long lastFPS;
 	public static int fps;
@@ -40,7 +40,10 @@ public class Game {
 	public Game(int width, int height, int tilesize) throws LWJGLException{
 		initOpenGL(width,height);
 		
+		
+		
 		TextureManager.init();
+		EntityManager.addEntity(new Player(200,400,TextureManager.getSpriteSheet(TextureManager.PLAYER)));
 		
 		Game.WIDTH = width;
 		Game.HEIGHT = height;
@@ -52,7 +55,7 @@ public class Game {
 		
 		getDelta();
 		
-		//ControllerManager.bindKeys();
+		ControllerManager.bindKeys();
 	
 		AudioManager.init();	
 	}

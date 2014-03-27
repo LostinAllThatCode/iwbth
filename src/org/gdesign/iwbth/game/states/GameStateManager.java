@@ -29,8 +29,8 @@ public class GameStateManager {
 		this.currentstate.handleEvents();
 	}
 	
-	public void update(long delta){
-		this.currentstate.update(delta);
+	public void update(long delta){	
+		this.currentstate.update(delta);	
 	}
 	
 	public void draw(){

@@ -3,6 +3,7 @@ package org.gdesign.iwbth.game.states;
 import org.gdesign.iwbth.game.audio.AudioManager;
 import org.gdesign.iwbth.game.entity.DebugMonitor;
 import org.gdesign.iwbth.game.entity.Entity;
+import org.gdesign.iwbth.game.entity.EntityManager;
 import org.gdesign.iwbth.game.entity.Player;
 import org.gdesign.iwbth.game.input.ControllerManager;
 import org.gdesign.iwbth.game.main.Game;
@@ -13,7 +14,6 @@ import org.lwjgl.input.Keyboard;
 
 public class GameStateRunning implements GameState {
 	
-	private Entity temp;
 	private DebugMonitor mon;
 	
 	private GameStateManager gsm;
@@ -30,8 +30,7 @@ public class GameStateRunning implements GameState {
 	public void init() {
 		currentMap = new TileMap("sad");
 		mon = new DebugMonitor(0, 0, Game.WIDTH, 150);
-		temp = new Player(150, 495, TextureManager.getSpriteSheet(TextureManager.PLAYER));
-		mon.setPlayerObject(temp);
+		mon.setPlayerObject(EntityManager.getPlayer());
 	}
 	
 	@Override
@@ -50,15 +49,14 @@ public class GameStateRunning implements GameState {
 	@Override
 	public void update(long delta) {
 		currentMap.update(delta);
-		temp.move(delta);
-		mon.move(delta);
+		EntityManager.move(delta);
 	}
 
 	@Override
 	public void draw() {
 		currentMap.draw();
+		EntityManager.draw();
 		mon.draw();
-		temp.draw();
 	}
 
 	@Override

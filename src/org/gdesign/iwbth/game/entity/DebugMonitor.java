@@ -16,13 +16,7 @@ public class DebugMonitor extends Entity{
 		debugFPS = "";
 	}
 	
-	@Override
-	public void move(long delta) {
-		debugDelta = String.valueOf(delta);
-		debugFPS = String.valueOf(Game.fps);
-	}
-	
-	public void setPlayerObject(Entity e){
+	public void setPlayerObject(Player e){
 		player = (Player) e;
 	}
 
@@ -30,8 +24,6 @@ public class DebugMonitor extends Entity{
 	@Override
 	public void draw() {
 		if (showDebug) {
-			Game.drawString(5, 5, "delta			: "+debugDelta, Color.white);
-			Game.drawString(5, 15, "fps				: "+debugFPS, Color.white);
 			Game.drawString(5, 25, "x				: "+player.rect.getX(), Color.white);
 			Game.drawString(5, 35, "y				: "+player.rect.getY(), Color.white);
 			Game.drawString(5, 45, "velX			: "+player.getVelocityX(), Color.white);

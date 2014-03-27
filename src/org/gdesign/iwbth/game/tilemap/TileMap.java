@@ -6,7 +6,6 @@ import org.gdesign.iwbth.game.main.Game;
 import org.gdesign.iwbth.game.texture.TextureManager;
 
 import static org.gdesign.iwbth.game.texture.TextureManager.*;
-import static org.lwjgl.opengl.GL11.*;
 
 public class TileMap {
 	
