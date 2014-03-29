@@ -13,10 +13,10 @@ public class Player extends Entity {
 
 	//TODO: Cleaning up variables. Optimizing jump detection. Collision detection not implemented yet. Just rudimentary.
 	
-	private static final int PLAYER_ANIMATION_IDLE = 1;
-	private static final int PLAYER_ANIMATION_WALK = 2;
-	private static final int PLAYER_ANIMATION_JUMP = 3;
-	private static final int PLAYER_ANIMATION_FALL = 4;
+	private final int PLAYER_ANIMATION_IDLE = 1;
+	private final int PLAYER_ANIMATION_WALK = 2;
+	private final int PLAYER_ANIMATION_JUMP = 3;
+	private final int PLAYER_ANIMATION_FALL = 4;
 	
 	private int currentAnimationState = PLAYER_ANIMATION_WALK;
 	private int currentFrame = 1;	
@@ -26,18 +26,15 @@ public class Player extends Entity {
 	private boolean isJumping = false;
 	private boolean canShoot = true;
 	
-	private float velY = 0;
-	private float velX = 0;
-	private float gravity = 0.03f;
-	private float maxJumpSpeed = 10;
-	private float currentJumpSpeed = 0;	
+	private float velY = 0, velX = 0, gravity = 0.03f, maxJumpSpeed = 10,currentJumpSpeed = 0;	
 
 	private long lastFrame = Game.getTime();
 	private long lastShot  = Game.getTime();
 	private int	 t = 0;
 	
 	public Player(int x, int y, SpriteSheet spritesheet) {
-		super(x, y, spritesheet);
+		super(x,y,8,17);
+		this.spritesheet = spritesheet;
 	}
 	
 	@Override
@@ -48,7 +45,10 @@ public class Player extends Entity {
 			velY += gravity*delta;
 			if (velY > 0) currentAnimationState = PLAYER_ANIMATION_FALL;
 			if (velY < 0) currentAnimationState = PLAYER_ANIMATION_JUMP;
-		} 
+		} else {
+			velY = 0;
+			currentAnimationState = PLAYER_ANIMATION_IDLE;
+		}
 		
 		if (!isJumping){
 			if (ControllerManager.isJumpPressed()){
@@ -94,7 +94,8 @@ public class Player extends Entity {
 			}
 		}
 		
-		if (!ControllerManager.isLeftPressed() && !ControllerManager.isRightPressed()) {
+		if (!ControllerManager.isLeftPressed() && !ControllerManager.isRightPressed() 
+				|| ControllerManager.isLeftPressed() && ControllerManager.isRightPressed()) {
 			velX = 0;
 			if (!isJumping) currentAnimationState = PLAYER_ANIMATION_IDLE; 
 		} else if (ControllerManager.isJumpPressed() && isJumping && isGrounded()){
@@ -106,7 +107,7 @@ public class Player extends Entity {
 		this.rect.translate((int) velX,(int) velY);
 		
 		if (isGrounded() && jumpc > 0) {
-			currentAnimationState = PLAYER_ANIMATION_IDLE;
+			
 			currentJumpSpeed = 0;			
 			velY = 0;
 			jumpc = 0;
@@ -115,8 +116,8 @@ public class Player extends Entity {
 	}
 	
 	private boolean  isGrounded(){
-		if (this.rect.getY() >= 495) {
-			this.rect.setY(495);
+		if (this.rect.getY() >= 520) {
+			this.rect.setY(520);
 			return true; 
 		}
 		else return false;
@@ -124,58 +125,62 @@ public class Player extends Entity {
 	
 	@Override
 	public void draw() {
+		
 		if (spritesheet != null) {
+			glPushMatrix();
 			Sprite sprite = spritesheet.getSprite(getAnimationFrame());
 			
+			glEnable(GL_TEXTURE_RECTANGLE_ARB);
 	        glBindTexture(GL_TEXTURE_RECTANGLE_ARB, sprite.getTexture());
 	        glColor3f(1, 1, 1);
+	        
 	        int texX  = sprite.getX();
 	        int texY  = sprite.getY();
 	        int texX2 = sprite.getX() + sprite.getWidth();
 	        int texY2 = sprite.getY() + sprite.getHeight();
 	        
-	        glPushMatrix();
+	       
 	        
         	if (facing == 1){
 			    glBegin(GL_QUADS);
 			        glTexCoord2f(texX, texY);
-			        glVertex2f(rect.getX(),rect.getY());
+			        glVertex2f(rect.getX()-sprite.getWidth()/2,rect.getY()-sprite.getHeight());
 			        glTexCoord2f(texX, texY2);
-			        glVertex2f(rect.getX(), rect.getY()+sprite.getHeight());
+			        glVertex2f(rect.getX()-sprite.getWidth()/2, rect.getY());
 			        glTexCoord2f(texX2, texY2);
-			        glVertex2f(rect.getX()+sprite.getWidth(), rect.getY()+sprite.getHeight());
+			        glVertex2f(rect.getX()+sprite.getWidth()/2, rect.getY());
 			        glTexCoord2f(texX2, texY);
-			        glVertex2f(rect.getX()+sprite.getWidth(), rect.getY());
+			        glVertex2f(rect.getX()+sprite.getWidth()/2, rect.getY()-sprite.getHeight());
 		        glEnd();
         	} else {
     		    glBegin(GL_QUADS);
 			    	glTexCoord2f(texX2, texY);
-			        glVertex2f(rect.getX(),rect.getY());
+			    	glVertex2f(rect.getX()-sprite.getWidth()/2,rect.getY()-sprite.getHeight());
 			        glTexCoord2f(texX2, texY2);
-			        glVertex2f(rect.getX(), rect.getY()+sprite.getHeight());
+			        glVertex2f(rect.getX()-sprite.getWidth()/2, rect.getY());
 			        glTexCoord2f(texX, texY2);
-			        glVertex2f(rect.getX()+sprite.getWidth(), rect.getY()+sprite.getHeight());
+			        glVertex2f(rect.getX()+sprite.getWidth()/2, rect.getY());
 			        glTexCoord2f(texX, texY);
-			        glVertex2f(rect.getX()+sprite.getWidth(), rect.getY());
+			        glVertex2f(rect.getX()+sprite.getWidth()/2, rect.getY()-sprite.getHeight());
 		        glEnd();
         	}
-        	
+        	glDisable(GL_TEXTURE_2D);
         	glBindTexture(GL_TEXTURE_RECTANGLE_ARB, 0);
-	        glPopMatrix();
-	       
+        	glPopMatrix();
 		}
+		super.draw();
 	}
 	
 	public String getCurrentAnimationState(){
 		switch (currentAnimationState) {
 		case 1:
-			return "PLAYER_ANIMATION_IDLE";
+			return "idle";
 		case 2:
-			return "PLAYER_ANIMATION_WALK";
+			return "walk";
 		case 3:
-			return "PLAYER_ANIMATION_JUMP";
+			return "jump";
 		case 4:
-			return "PLAYER_ANIMATION_FALL";
+			return "fall";
 		default:
 			return "NOT DEFINED YET";
 		}
@@ -238,10 +243,11 @@ public class Player extends Entity {
 	
 	private void shoot(){
 		long time = Game.getTime();
-		if (time - lastShot >= 25 && canShoot) {
+		if (time - lastShot >= 150 && canShoot) {
 			lastShot = time;
 			canShoot = false;
-			EntityManager.addShot(this.rect.getX()+6, this.rect.getY()+10, facing);
+			EntityManager.addShot(this.rect.getX(), this.rect.getY()-this.rect.getHeight()/2, facing);
+			AudioManager.playFX(AudioManager.SOUND_FX_SHOT);
 		}
 	}
 	

@@ -6,6 +6,7 @@ import static org.lwjgl.opengl.GL11.*;
 import java.awt.Font;
 
 import org.gdesign.iwbth.game.audio.AudioManager;
+import org.gdesign.iwbth.game.entity.EnemyMe;
 import org.gdesign.iwbth.game.entity.EntityManager;
 import org.gdesign.iwbth.game.entity.Player;
 import org.gdesign.iwbth.game.states.GameStateManager;
@@ -17,7 +18,6 @@ import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.TrueTypeFont;
-import org.newdawn.slick.openal.Audio;
 import org.newdawn.slick.opengl.TextureImpl;
 
 public class Game {
@@ -27,27 +27,28 @@ public class Game {
 	
 	protected static long lastFPS;
 	public static int fps;
-	protected static TrueTypeFont font;
+	protected static TrueTypeFont font,fontBig;
 	protected static long lastFrame;
 
-	protected static boolean isRunning = false;
+	public static boolean isRunning = false;
 	
 	public static boolean showTileGrid = false;
 	
-	public Audio oggStream;
-	
-	public Game(int width, int height, int tilesize) throws LWJGLException{
+	public Game(int width, int height) throws LWJGLException{
 		initOpenGL(width,height);
 		
 		TextureManager.init();
 		EntityManager.init();
-		EntityManager.addEntity(new Player(200,400,TextureManager.getSpriteSheet(TextureManager.PLAYER)));
+		EntityManager.addEntity(new Player(160,0,TextureManager.getSpriteSheet(TextureManager.PLAYER)));
+		EntityManager.addEntity(new EnemyMe(400,520,TextureManager.getSpriteSheet(TextureManager.PLAYER)));
 		
 		Game.WIDTH = width;
 		Game.HEIGHT = height;
 		Game.TSIZE = width/20;
+		Game.font = new TrueTypeFont(new Font("Cordia UPC", Font.PLAIN, 10),true);
+		Game.fontBig = new TrueTypeFont(new Font("Impactr", Font.PLAIN, 64),true);
 		Game.GSM = new GameStateManager();
-		Game.font = new TrueTypeFont(new Font("Cordia UPC", Font.PLAIN, 10),false);
+		
 		
 		Game.lastFPS = getTime();
 		
@@ -55,7 +56,8 @@ public class Game {
 		
 		//ControllerManager.bindKeys();
 	
-		AudioManager.init();	
+		AudioManager.init();
+		//setDisplayMode(Game.WIDTH, Game.HEIGHT, true);
 	}
 	
 	public void start(){
@@ -65,6 +67,7 @@ public class Game {
 	
 	private void initOpenGL(int width, int height) throws LWJGLException{
 		Display.setDisplayMode(new DisplayMode(width,height));
+		Display.setVSyncEnabled(true);
 		Display.create();
 	
         glEnable(GL_TEXTURE_RECTANGLE_ARB);
@@ -85,10 +88,12 @@ public class Game {
 		glLoadIdentity();
 		glOrtho(0, width, height, 0, 1, -1);
 		glMatrixMode(GL_MODELVIEW);
+		
 	}
 	
 	private void gameLoop(){
-		while (!Display.isCloseRequested() && isRunning){
+		Display.setVSyncEnabled(true);
+		while (!Display.isCloseRequested() && isRunning){		
 			int delta = getDelta();
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 			updateFPS();
@@ -115,9 +120,7 @@ public class Game {
 		Game.fps++;
 	}
 	
-	public static long getTime(){
-		return (Sys.getTime() * 1000) / Sys.getTimerResolution();
-	}
+
 	
 	public int getDelta() {
 	    long time = getTime();
@@ -127,11 +130,75 @@ public class Game {
 	    return delta;
 	}
 	
+	public void setDisplayMode(int width, int height, boolean fullscreen) {
+        if ((Display.getDisplayMode().getWidth() == width) && 
+			(Display.getDisplayMode().getHeight() == height) && 
+			(Display.isFullscreen() == fullscreen)) {
+			return;
+		}
+		
+		try {
+			DisplayMode targetDisplayMode = null;
+			
+			if (fullscreen) {
+				DisplayMode[] modes = Display.getAvailableDisplayModes();
+				int freq = 0;
+				
+				for (int i=0;i<modes.length;i++) {
+					DisplayMode current = modes[i];
+					
+					if ((current.getWidth() == width) && (current.getHeight() == height)) {
+						if ((targetDisplayMode == null) || (current.getFrequency() >= freq)) {
+							if ((targetDisplayMode == null) || (current.getBitsPerPixel() > targetDisplayMode.getBitsPerPixel())) {
+								targetDisplayMode = current;
+								freq = targetDisplayMode.getFrequency();
+							}
+						}
+
+						if ((current.getBitsPerPixel() == Display.getDesktopDisplayMode().getBitsPerPixel()) &&
+						    (current.getFrequency() == Display.getDesktopDisplayMode().getFrequency())) {
+							targetDisplayMode = current;
+							break;
+						}
+					}
+				}
+			} else {
+				targetDisplayMode = new DisplayMode(width,height);
+			}
+			
+			if (targetDisplayMode == null) {
+				System.out.println("Failed to find value mode: "+width+"x"+height+" fs="+fullscreen);
+				return;
+			}
+
+			Display.setDisplayMode(targetDisplayMode);
+			Display.setFullscreen(fullscreen);
+			
+		} catch (LWJGLException e) {
+			System.out.println("Unable to setup mode "+width+"x"+height+" fullscreen="+fullscreen + e);
+		}
+	}	
+	
+	public static long getTime(){
+		return (Sys.getTime() * 1000) / Sys.getTimerResolution();
+	}
+	
 	public static void drawString(int x, int y, String text, Color color){
 		glDisable(GL_TEXTURE_RECTANGLE_ARB);
 		TextureImpl.bindNone();
 		Color.white.bind();
 		Game.font.drawString(x, y, text ,color);
+		Color.white.bind();
+		glBindTexture(GL_TEXTURE_2D,0);
+		glEnable(GL_TEXTURE_RECTANGLE_ARB);
+	}
+	
+	
+	public static void drawBigString(int x, int y, String text, Color color){
+		glDisable(GL_TEXTURE_RECTANGLE_ARB);
+		TextureImpl.bindNone();
+		Color.white.bind();
+		Game.fontBig.drawString(x, y, text ,color);
 		Color.white.bind();
 		glBindTexture(GL_TEXTURE_2D,0);
 		glEnable(GL_TEXTURE_RECTANGLE_ARB);

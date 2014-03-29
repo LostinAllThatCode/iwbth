@@ -14,6 +14,7 @@ public class AudioManager {
 
 	public static final int SOUND_MUSIC_LOOP1 	= 0;	
 	public static final int SOUND_FX_JUMP 		= 1;
+	public static final int SOUND_FX_SHOT 		= 2;
 	
 	private static ArrayList<Audio> sounds = new ArrayList<>();
 	private static Audio currentSound;
@@ -24,6 +25,7 @@ public class AudioManager {
 	public static boolean init(){
 		try {
 			sounds.add(AudioLoader.getAudio("OGG", ResourceLoader.getResourceAsStream("sound/bgmusic.ogg")));
+			sounds.add(AudioLoader.getAudio("OGG", ResourceLoader.getResourceAsStream("sound/j2.ogg")));
 			sounds.add(AudioLoader.getAudio("OGG", ResourceLoader.getResourceAsStream("sound/jump.ogg")));
 			currentSound=sounds.get(0);
 			return true;

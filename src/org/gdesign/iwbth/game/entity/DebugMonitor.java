@@ -1,6 +1,5 @@
 package org.gdesign.iwbth.game.entity;
 
-import org.gdesign.iwbth.game.input.ControllerManager;
 import org.gdesign.iwbth.game.main.Game;
 import org.newdawn.slick.Color;
 
@@ -16,6 +15,7 @@ public class DebugMonitor extends Entity{
 		super(x, y, w, h);
 		debugDelta = "";
 		debugFPS = "";
+		if (Game.showTileGrid) showDebug = true;
 	}
 	
 	public void setPlayerObject(Player e){
@@ -26,23 +26,14 @@ public class DebugMonitor extends Entity{
 	@Override
 	public void draw() {
 		if (showDebug) {
-			Game.drawString(5, 25, "x				: "+player.rect.getX(), Color.white);
-			Game.drawString(5, 35, "y				: "+player.rect.getY(), Color.white);
-			Game.drawString(5, 45, "velX			: "+player.getVelocityX(), Color.white);
-			Game.drawString(5, 55, "velY			: "+player.getVelocityY(), Color.white);
-			Game.drawString(5, 65, "jump			: "+player.getJumpCount(), Color.white);
-			Game.drawString(5, 75, "curretFrame		: "+player.getCurrentAnimationFrame(), Color.white);
-			Game.drawString(5, 85, "curretAnim		: "+player.getCurrentAnimationState(), Color.white);
+			Game.drawString(5, 5, "x: " + player.rect.getX()+", y: "+ player.rect.getY()+", "
+									+"x.vel: "+player.getVelocityX()+", y.vel: "+ player.getVelocityY()+", "
+									+"j: "+player.getJumpCount()+", s: "+EntityManager.getShotCount(), Color.black);
+			Game.drawString(5, 20, "state: "+player.getCurrentAnimationState()+", "
+									+"frame: " +player.getCurrentAnimationFrame(), Color.black);
 			
-			
-			Game.drawString(Game.WIDTH-100, 5, ControllerManager.getControllerId()+":CTRL_ID", Color.white);
-			Game.drawString(Game.WIDTH-100, 15,ControllerManager.isUpPressed()+":UP", Color.white);
-			Game.drawString(Game.WIDTH-100, 25,ControllerManager.isLeftPressed()+":LEFT", Color.white);
-			Game.drawString(Game.WIDTH-100, 35,ControllerManager.isDownPressed()+":DOWN", Color.white);
-			Game.drawString(Game.WIDTH-100, 45,ControllerManager.isRightPressed()+":RIGHT", Color.white);
-			Game.drawString(Game.WIDTH-100, 55,ControllerManager.isShootPressed()+":SHOOT", Color.white);
-			Game.drawString(Game.WIDTH-100, 65,ControllerManager.isJumpPressed()+":JUMP", Color.white);	
 		}
+		Game.drawBigString(Game.WIDTH/2-20,50 , String.valueOf(EntityManager.getKillCounter()), Color.black);
 	}
 	
 	public void setDebug(boolean b){

@@ -44,7 +44,6 @@ public class TileMap {
 			x = 0;
 			y += tilesize;
 		}
-		translate(-(offsetx*Game.TSIZE), 0);
 	}
 	
 	public void update(long delta){

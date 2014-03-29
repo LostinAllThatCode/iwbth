@@ -15,13 +15,13 @@ public class GameStateRunning implements GameState {
 	
 	private DebugMonitor mon;
 	
-	private GameStateManager gsm;
+	//private GameStateManager gsm;
 	private TileMap currentMap;
 	
 	float vol = 1.0f;
 	
 	public GameStateRunning(GameStateManager gsm){
-		this.gsm = gsm;
+		//this.gsm = gsm;
 		this.init();
 	}
 	
@@ -38,9 +38,11 @@ public class GameStateRunning implements GameState {
 		ControllerManager.pollInput();
 		if (Keyboard.isKeyDown(Keyboard.KEY_F10)){
 			mon.setDebug(false);
+			Game.showTileGrid = false;
 		}
 		if (Keyboard.isKeyDown(Keyboard.KEY_F9)){
 			mon.setDebug(true);
+			Game.showTileGrid = true;
 		}
 		if (Keyboard.isKeyDown(Keyboard.KEY_F11)) AudioManager.play(true);
 		if (Keyboard.isKeyDown(Keyboard.KEY_F12)) AudioManager.stop();
@@ -56,7 +58,6 @@ public class GameStateRunning implements GameState {
 	public void draw() {
 		currentMap.draw();
 		EntityManager.draw();
-		//mon.draw();
 	}
 
 	@Override

@@ -28,14 +28,18 @@ public class Tile {
 	}
 	
 	public void draw(){
+		glPushMatrix();
 		if (sprite != null) {
+			glEnable(GL_TEXTURE_RECTANGLE_ARB);
+			
 	        glBindTexture(GL_TEXTURE_RECTANGLE_ARB, sprite.getTexture());
 	
 	        int tx  = sprite.getX();
 	        int ty  = sprite.getY();
 	        int tx2 = sprite.getX() + sprite.getWidth();
 	        int ty2 = sprite.getY() + sprite.getHeight();
-	
+	        
+	        glColor3f(1, 1, 1);
 	        glBegin(GL_QUADS);
 		        glTexCoord2f(tx, ty);
 		        glVertex2f(x, y);
@@ -46,18 +50,35 @@ public class Tile {
 		        glTexCoord2f(tx2, ty);
 		        glVertex2f(x+tilesize, y);
 	        glEnd();
-	
+
 	        glBindTexture(GL_TEXTURE_RECTANGLE_ARB, 0);
+	        glDisable(GL_TEXTURE_2D);
+		} else {
+			glEnable(GL_COLOR);
+			glColor3f(.7f,.85f,1);
+		        glBegin(GL_QUADS);
+		        glVertex2f(x, y);
+		        glVertex2f(x, y+tilesize);
+		        glVertex2f(x+tilesize, y+tilesize);
+		        glVertex2f(x+tilesize, y);
+	        glEnd();
+	        glColor3f(1,1,1);
+	        
+	        glDisable(GL_COLOR);
 		}
+		
 		if (Game.showTileGrid){
-	        glColor3f(1, 1, 1);
+			glEnable(GL_COLOR);
+	        glColor4f(1, 1, 1,.2f);
 	        glBegin(GL_LINE_LOOP);
 	        	glVertex2f(x, y);
 		        glVertex2f(x, y+tilesize);
 		        glVertex2f(x+tilesize, y+tilesize);
 		        glVertex2f(x+tilesize, y);
 	        glEnd();
+	        glDisable(GL_COLOR);
 		}
-
+		
+		glPopMatrix();
 	}
 }
