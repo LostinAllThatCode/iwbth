@@ -8,33 +8,24 @@ public class DebugMonitor extends Entity{
 	//TODO: Debug purpose only!
 	
 	public boolean showDebug = false;
-	public String debugDelta,debugFPS;
-	public Player player;
 
 	public DebugMonitor(int x, int y, int w, int h) {
 		super(x, y, w, h);
-		debugDelta = "";
-		debugFPS = "";
 		if (Game.showTileGrid) showDebug = true;
 	}
-	
-	public void setPlayerObject(Player e){
-		player = (Player) e;
-	}
-
 	
 	@Override
 	public void draw() {
 		if (showDebug) {
-			Game.drawString(5, 5, "x: " 	+ player.getX()	+ ", "
-								+ "y: "		+ player.getY()	+ ", "
-								+ "x.vel: "	+ player.getVelocityX()	+ ", "
-								+ "y.vel: "	+ player.getVelocityY()	+ ", "
-								+ "j: "		+ player.getJumpCount()	+ ", "
+			Game.drawString(5, 5, "x: " 	+ EntityManager.getPlayer().getX()	+ ", "
+								+ "y: "		+ EntityManager.getPlayer().getY()	+ ", "
+								+ "x.vel: "	+ EntityManager.getPlayer().getVelocityX()	+ ", "
+								+ "y.vel: "	+ EntityManager.getPlayer().getVelocityY()	+ ", "
+								+ "j: "		+ EntityManager.getPlayer().getJumpCount()	+ ", "
 								+ "s: "		+ EntityManager.getShotCount()	, Color.black);
 			
-			Game.drawString(5, 20, "state: " + player.getCurrentAnimationState()+", "
-								+  "frame: " + player.getCurrentAnimationFrame(), Color.black);
+			Game.drawString(5, 20, "state: " + EntityManager.getPlayer().getCurrentAnimationState()+", "
+								+  "frame: " + EntityManager.getPlayer().getCurrentAnimationFrame(), Color.black);
 		}
 		Game.drawBigString(Game.WIDTH/2-20,50 , String.valueOf(EntityManager.getKillCounter()), Color.black);
 	}

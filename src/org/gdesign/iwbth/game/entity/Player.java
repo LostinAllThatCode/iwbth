@@ -67,8 +67,8 @@ public class Player extends Entity {
 			}
 		}
 		
-		if (ControllerManager.isLeftPressed()) velX += -0.1f*delta;
-		if (ControllerManager.isRightPressed()) velX += 0.1f*delta;
+		if (ControllerManager.isLeftPressed()) velX = (float) Math.ceil(-0.2f*delta);
+		if (ControllerManager.isRightPressed()) velX = (float) Math.floor(0.2f*delta);
 		
 		if (isJumping){
 			if (!ControllerManager.isJumpPressed() && jumpc == 0) jumpc=1;
@@ -83,17 +83,6 @@ public class Player extends Entity {
 			}
 		}
 
-		if (velX != 0){
-			if (velX < -3) {
-				velX = -3;
-				facing = -1;
-			}
-			else if (velX > 3) {
-				velX = 3;
-				facing = 1;
-			}
-		}
-		
 		if (!ControllerManager.isLeftPressed() && !ControllerManager.isRightPressed() 
 				|| ControllerManager.isLeftPressed() && ControllerManager.isRightPressed()) {
 			velX = 0;
@@ -101,6 +90,7 @@ public class Player extends Entity {
 		} else if (ControllerManager.isJumpPressed() && isJumping && isGrounded()){
 				if (velX != 0) currentAnimationState = PLAYER_ANIMATION_WALK;
 		} else {
+			facing = (int) Math.signum(velX);
 			if (!isJumping) currentAnimationState = PLAYER_ANIMATION_WALK;
 		}
 		
@@ -140,9 +130,7 @@ public class Player extends Entity {
 	        int texY  = sprite.getY();
 	        int texX2 = sprite.getX() + sprite.getWidth();
 	        int texY2 = sprite.getY() + sprite.getHeight();
-	        
-	       
-	        
+        
         	if (facing == 1){
 			    glBegin(GL_QUADS);
 			        glTexCoord2f(texX, texY);
@@ -232,11 +220,11 @@ public class Player extends Entity {
 	}
 
 	public double getVelocityX(){
-		return Math.floor(velX);
+		return velX;
 	}
 	
 	public double getVelocityY(){
-		return Math.floor(velY);
+		return velY;
 	}
 	
 	public int getJumpCount(){

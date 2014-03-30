@@ -19,11 +19,12 @@ public class GameStateManager {
 	public GameStateManager(){
 		gamestates.add(new GameStateRunning());
 		gamestates.add(new GameStatePause());
-		currentstate = gamestates.get(0);
+		setState(0);
 	}
 	
 	public void setState(int state){
 		this.currentstate = gamestates.get(state);
+		this.currentstate.init();
 	}
 	
 	public void handleEvents(){

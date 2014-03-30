@@ -73,8 +73,7 @@ public class PlayerShot extends Entity {
 		if (rect.intersects(e.rect)) {
 			hasCollided = true;
 			EntityManager.removeShot(this);
-			e.kill();
+			EntityManager.removeEntity(e);
 		}
-
 	}
 }

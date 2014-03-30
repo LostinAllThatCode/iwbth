@@ -1,6 +1,7 @@
 package org.gdesign.iwbth.game.entity;
 
 import java.util.ArrayList;
+import java.util.Vector;
 
 import org.gdesign.iwbth.game.main.Game;
 import org.gdesign.iwbth.game.texture.TextureManager;
@@ -9,9 +10,10 @@ public class EntityManager {
 	
 	//TODO: Temporary testing environment. This will be changed dramatically.
 	
-	private static ArrayList<Entity> addentities = new ArrayList<Entity>();
+	private static Vector<Entity> addentities = new Vector<Entity>();
+	private static Vector<Entity> trashbin = new Vector<Entity>();
+
 	private static ArrayList<Entity> entities = new ArrayList<Entity>();
-	private static ArrayList<Entity> trashbin = new ArrayList<Entity>();
 	
 	private static ArrayList<PlayerShot> shotsAvailable	= new ArrayList<PlayerShot>();
 	private static ArrayList<PlayerShot> shotsInUse		= new ArrayList<PlayerShot>();
@@ -19,43 +21,50 @@ public class EntityManager {
 	private static int MAX_PLAYER_SHOTS = 10;
 	
 	private static Player player;
-	private static DebugMonitor mon;
+	private static DebugMonitor monitor;
 	
 	private static int KILLCOUNTER = 0;
 	
-	public static void init(){
-		if (shotsAvailable.size() == 0){
-			for (int i=1; i<=MAX_PLAYER_SHOTS;i++) shotsAvailable.add(new PlayerShot(0, 0,TextureManager.getSpriteSheet(TextureManager.PLAYER)));
-		}
+	public static void init(){		
+		addEntity(new Player(160,0,TextureManager.getSpriteSheet(TextureManager.PLAYER)));
+		addEntity(new DebugMonitor(0,0,Game.WIDTH,200));
+		
+		while (shotsAvailable.size() < 10)
+			shotsAvailable.add(new PlayerShot(0, 0,TextureManager.getSpriteSheet(TextureManager.PLAYER)));
+
 	}
 	
 	public static void addEntity(Entity e){
 		if (e instanceof Player) {
 			player = (Player) e;
 		} else if (e instanceof DebugMonitor) {
-			mon = (DebugMonitor) e;
+			monitor = (DebugMonitor) e; 
 		} else addentities.add(e);
 	}
 	
-	public static void update(){
+	
+	public static void update(long delta){		
+		for (int i=1; i<= 5-entities.size(); i++) {
+			EnemyMe enemy = new EnemyMe(myRandom(0,Game.WIDTH),myRandom(0,Game.HEIGHT-200),TextureManager.getSpriteSheet(TextureManager.PLAYER));
+			enemy.setRandomFacing(myRandom(1, 4));
+			addEntity(enemy);
+		 }		 
+		
 		for (PlayerShot s : shotsAvailable) {
 			shotsInUse.remove(s);	
 		}
 		
-		if (addentities.size() != 0){
-			for (Entity e : addentities){
-				entities.add(e);
-			}
-			for (Entity e : entities){
-				addentities.remove(e);
-			}
+		while (!addentities.isEmpty()) {
+			entities.add(addentities.get(0));
+			addentities.remove(0);
 		}
 		
-		if (trashbin.size() > 0){
-			for (Entity e : trashbin) {
-				entities.remove(e);		
-			}		
+		while (!trashbin.isEmpty()) {
+			entities.remove(trashbin.get(0));
+			trashbin.remove(0);
 		}
+		
+		move(delta);
 	}
 	
 	public static void move(long delta){	
@@ -73,13 +82,11 @@ public class EntityManager {
 				p.checkCollsion(e);
 			}
 		}
-		
-		update();
 	}
 	
 	public static void draw(){		
 		player.draw();
-		mon.draw();
+		monitor.draw();
 		
 		for (PlayerShot p : shotsInUse){
 			p.draw();
@@ -91,6 +98,10 @@ public class EntityManager {
 
 	public static Player getPlayer() {
 		if (player != null)	return player; else return null;
+	}
+	
+	public static DebugMonitor getMonitor() {
+		if (monitor != null)	return monitor; else return null;
 	}
 	
 	public static int getShotCount(){
@@ -110,19 +121,13 @@ public class EntityManager {
 		return false;
 	}
 	
-	public static void removeEntity(Entity e){
-		trashbin.add(e);
-		KILLCOUNTER++;
+	public static void removeEntity(Entity e){	
 		if (e instanceof Player) {
-			//Game.isRunning = false;
 			Game.GSM.setState(1);
 		} else {
-			for (int i=1; i<= 5-entities.size(); i++) {
-				EnemyMe enemy = new EnemyMe(myRandom(0,Game.WIDTH),myRandom(0,Game.HEIGHT-200),TextureManager.getSpriteSheet(TextureManager.PLAYER));
-				enemy.setRandomFacing(myRandom(1, 4));
-				addEntity(enemy);
-			 }
-	 	}		
+			trashbin.add(e);		
+			KILLCOUNTER++;		
+		}
 	}
 	
 	public static void removeShot(PlayerShot p){
@@ -131,6 +136,17 @@ public class EntityManager {
 	
 	public static int getKillCounter(){
 		return KILLCOUNTER;
+	}
+	
+	public static void cleanUp(){
+		addentities.clear();
+		trashbin.clear();
+		entities.clear();
+		
+		shotsAvailable.clear();
+		shotsInUse.clear();
+		
+		KILLCOUNTER=0;
 	}
 	
 	//TODO: REMOVE THIS TEMPORARY FUNCTION

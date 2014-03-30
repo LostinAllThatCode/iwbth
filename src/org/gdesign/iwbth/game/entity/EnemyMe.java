@@ -19,7 +19,7 @@ public class EnemyMe extends Entity {
 	private int currentAnimationState = PLAYER_ANIMATION_IDLE;
 	private int currentFrame = 1;	
 	
-	private float velY = 0, velX = 0, gravity = 0.03f;
+	private float velY = 0, velX = 0, gravity = 0.01f;
 	//maxJumpSpeed = 10,currentJumpSpeed = 0;	
 	
 	private int facing=-1;
@@ -48,17 +48,17 @@ public class EnemyMe extends Entity {
 		} else {
 			velY = 0;
 			currentAnimationState = PLAYER_ANIMATION_WALK;
-		}
-		
-		velX = .2f*delta*facing;
+			
+			velX = .2f*delta*facing;
 
-		if (rect.getX()-velX < 0) facing = 1;
-			else if (rect.getX()+velX >= Game.WIDTH) facing = -1; 	
-		
+			if (rect.getX()-velX < 0) facing = 1;
+				else if (rect.getX()+velX >= Game.WIDTH) facing = -1; 	
+			
+		}
 		
 		x += velX;
 		y += velY;
-		
+				
 		setLocation(x, y);
 	}
 	

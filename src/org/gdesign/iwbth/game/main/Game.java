@@ -6,9 +6,6 @@ import static org.lwjgl.opengl.GL11.*;
 import java.awt.Font;
 
 import org.gdesign.iwbth.game.audio.AudioManager;
-import org.gdesign.iwbth.game.entity.EnemyMe;
-import org.gdesign.iwbth.game.entity.EntityManager;
-import org.gdesign.iwbth.game.entity.Player;
 import org.gdesign.iwbth.game.states.GameStateManager;
 import org.gdesign.iwbth.game.texture.TextureManager;
 import org.lwjgl.LWJGLException;
@@ -38,17 +35,13 @@ public class Game {
 		initOpenGL(width,height);
 		
 		TextureManager.init();
-		EntityManager.init();
-		EntityManager.addEntity(new Player(160,0,TextureManager.getSpriteSheet(TextureManager.PLAYER)));
-		EntityManager.addEntity(new EnemyMe(400,520,TextureManager.getSpriteSheet(TextureManager.PLAYER)));
 		
 		Game.WIDTH = width;
 		Game.HEIGHT = height;
 		Game.TSIZE = width/20;
 		Game.font = new TrueTypeFont(new Font("Cordia UPC", Font.PLAIN, 10),true);
-		Game.fontBig = new TrueTypeFont(new Font("Impact", Font.PLAIN, 64),true);
-		Game.GSM = new GameStateManager();
-		
+		Game.fontBig = new TrueTypeFont(new Font("Impact", Font.PLAIN, 60),true);
+		Game.GSM = new GameStateManager();	
 		
 		Game.lastFPS = getTime();
 		
@@ -57,6 +50,7 @@ public class Game {
 		//ControllerManager.bindKeys();
 	
 		AudioManager.init();
+		
 		//setDisplayMode(Game.WIDTH, Game.HEIGHT, true);
 	}
 	
@@ -183,7 +177,7 @@ public class Game {
 	}
 	
 	public static void drawString(int x, int y, String text, Color color){
-		glDisable(GL_TEXTURE_RECTANGLE_ARB);
+		glDisable(GL_TEXTURE_2D);
 		TextureImpl.bindNone();
 		Color.white.bind();
 		Game.font.drawString(x, y, text ,color);
