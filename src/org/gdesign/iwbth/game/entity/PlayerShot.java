@@ -21,7 +21,7 @@ public class PlayerShot extends Entity {
 
 	public void setDirection(int x, int y, int dir){
 		this.dir = dir;
-		this.setLocation(x, y);
+		setLocation(x, y);
 		this.hasCollided = false;
 	}
 	
@@ -43,13 +43,13 @@ public class PlayerShot extends Entity {
         glEnable(GL_TEXTURE_RECTANGLE_ARB);
 	    glBegin(GL_QUADS);
 	        glTexCoord2f(texX, texY);
-	        glVertex2f(rect.getX()-sprite.getWidth()/2,rect.getY()-sprite.getHeight());
+	        glVertex2f(x-sprite.getWidth()/2, y-sprite.getHeight());
 	        glTexCoord2f(texX, texY2);
-	        glVertex2f(rect.getX()-sprite.getWidth()/2, rect.getY());
+	        glVertex2f(x-sprite.getWidth()/2, y);
 	        glTexCoord2f(texX2, texY2);
-	        glVertex2f(rect.getX()+sprite.getWidth()/2, rect.getY());
+	        glVertex2f(x+sprite.getWidth()/2, y);
 	        glTexCoord2f(texX2, texY);
-	        glVertex2f(rect.getX()+sprite.getWidth()/2, rect.getY()-sprite.getHeight());
+	        glVertex2f(x+sprite.getWidth()/2, y-sprite.getHeight());
         glEnd();
         glDisable(GL_TEXTURE_RECTANGLE_ARB);
     	glBindTexture(GL_TEXTURE_RECTANGLE_ARB, 0);
@@ -63,13 +63,14 @@ public class PlayerShot extends Entity {
 			hasCollided = true;
 			EntityManager.removeShot(this);
 		}
-		if (!hasCollided) this.rect.translate((int) (speed*delta*dir), 0);
+		if (!hasCollided) {
+			this.x += (speed*delta*dir);
+			setLocation(x, y);
+		}
 	}
 	
 	public void checkCollsion(Entity e){
-
-		
-		if (intersects(e)) {
+		if (rect.intersects(e.rect)) {
 			hasCollided = true;
 			EntityManager.removeShot(this);
 			e.kill();

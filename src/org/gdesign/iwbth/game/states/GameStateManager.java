@@ -17,7 +17,8 @@ public class GameStateManager {
 	private GameState currentstate = null;
 	
 	public GameStateManager(){
-		gamestates.add(new GameStateRunning(this));
+		gamestates.add(new GameStateRunning());
+		gamestates.add(new GameStatePause());
 		currentstate = gamestates.get(0);
 	}
 	

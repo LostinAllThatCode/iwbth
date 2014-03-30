@@ -9,24 +9,23 @@ import org.newdawn.slick.Color;
 
 public class Entity {
 	
+	protected int x,y;
 	protected Rectangle rect = new Rectangle();
 	protected SpriteSheet spritesheet = null;
 	
 	public Entity(int x, int y, int w, int h){
-		rect.setBounds(x, y, w, h);
-	}
-	
-	public Entity(int x, int y, SpriteSheet spritesheet){
-		setLocation(x, y);
-		this.spritesheet = spritesheet;
+		this.x = x;
+		this.y = y;
+		rect.setBounds(x-w/2, y-h, w, h);
 	}
 	
 	public void setLocation(int x, int y){
-		this.rect.setLocation(x, y);
+		this.x = x;
+		this.y = y;
+		rect.setLocation(x-rect.getWidth()/2,y-rect.getHeight());
 	}
 	
 	public void move(long delta){
-		
 	}
 	
 	public void draw(){
@@ -37,19 +36,19 @@ public class Entity {
 			
 			glColor4f(1, 0, 0,.5f);
 	        glBegin(GL_QUADS);
-		        glVertex2f(rect.getX()-rect.getWidth()/2,  rect.getY() - rect.getHeight());
-		        glVertex2f(rect.getX()-rect.getWidth()/2,  rect.getY());
-		        glVertex2f(rect.getX() + rect.getWidth()/2, rect.getY());
-		        glVertex2f(rect.getX() + rect.getWidth()/2, rect.getY() - rect.getHeight());
+		        glVertex2f(rect.getX(),  rect.getY());
+		        glVertex2f(rect.getX(),  rect.getY() + rect.getHeight());
+		        glVertex2f(rect.getX() + rect.getWidth(), rect.getY() + rect.getHeight());
+		        glVertex2f(rect.getX() + rect.getWidth(), rect.getY());
 	        glEnd();
 	        
 	        glBegin(GL_LINE_LOOP);
-		        glVertex2f(rect.getX()+rect.getWidth()/2,  rect.getY() - rect.getHeight());
-		        glVertex2f(rect.getX()+rect.getWidth()/2+10,  rect.getY() - rect.getHeight()-10);
+		        glVertex2f(rect.getX(),  rect.getY()+rect.getHeight());
+		        glVertex2f(rect.getX()-5,  rect.getY()+rect.getHeight()+5);
 	        glEnd();      
 	        
-	    	Game.drawString(rect.getX()+rect.getWidth()/2+10,  rect.getY() - rect.getHeight()-25, 
-	    			"["+String.valueOf(rect.getX()) +"/"+ String.valueOf(rect.getY())+"]" , Color.red);    
+	    	Game.drawString(x-50,  y+7, 
+	    			"["+String.valueOf(x) +"/"+ String.valueOf(y)+"]" , Color.red);    
 	        
 	    	glColor3f(1, 1, 1);
 	        glDisable(GL_COLOR);
@@ -57,18 +56,16 @@ public class Entity {
         glPopMatrix();
 	}
 	
-	public Rectangle getIntersectionRectangle(){
-		int eX = rect.getX()-rect.getWidth()/2;
-		int eY = rect.getY()-rect.getHeight();
-		return new Rectangle(eX,eY,rect.getWidth(),rect.getHeight());
-	}
-	
-	public boolean intersects(Entity e){
-		return getIntersectionRectangle().intersects(e.getIntersectionRectangle());
-	}
-	
-	public void kill(){
+	protected void kill(){
 		EntityManager.removeEntity(this);
+	}
+	
+	protected int getX(){
+		return x;
+	}
+
+	protected int getY(){
+		return y;
 	}
 	
 }

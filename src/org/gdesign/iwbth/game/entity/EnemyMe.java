@@ -52,15 +52,20 @@ public class EnemyMe extends Entity {
 		
 		velX = .2f*delta*facing;
 
-		if (this.rect.getX()-velX < 0) facing = 1;
-			else if (this.rect.getX()+velX >= Game.WIDTH) facing = -1; 	
-		this.rect.translate((int) velX,(int) velY);
+		if (rect.getX()-velX < 0) facing = 1;
+			else if (rect.getX()+velX >= Game.WIDTH) facing = -1; 	
+		
+		
+		x += velX;
+		y += velY;
+		
+		setLocation(x, y);
 	}
 	
 	
 	private boolean  isGrounded(){
-		if (this.rect.getY() >= 520) {
-			this.rect.setY(520);
+		if (y >= 520) {
+			setLocation(x, 520);
 			return true; 
 		}
 		else return false;
@@ -85,24 +90,24 @@ public class EnemyMe extends Entity {
         	if (facing == 1){
 			    glBegin(GL_QUADS);
 			        glTexCoord2f(texX, texY);
-			        glVertex2f(rect.getX()-sprite.getWidth()/2,rect.getY()-sprite.getHeight());
+			        glVertex2f(x-sprite.getWidth()/2, y-sprite.getHeight());
 			        glTexCoord2f(texX, texY2);
-			        glVertex2f(rect.getX()-sprite.getWidth()/2, rect.getY());
+			        glVertex2f(x-sprite.getWidth()/2, y);
 			        glTexCoord2f(texX2, texY2);
-			        glVertex2f(rect.getX()+sprite.getWidth()/2, rect.getY());
+			        glVertex2f(x+sprite.getWidth()/2, y);
 			        glTexCoord2f(texX2, texY);
-			        glVertex2f(rect.getX()+sprite.getWidth()/2, rect.getY()-sprite.getHeight());
+			        glVertex2f(x+sprite.getWidth()/2, y-sprite.getHeight());
 		        glEnd();
         	} else {
     		    glBegin(GL_QUADS);
 			    	glTexCoord2f(texX2, texY);
-			    	glVertex2f(rect.getX()-sprite.getWidth()/2,rect.getY()-sprite.getHeight());
+			    	glVertex2f(x-sprite.getWidth()/2, y-sprite.getHeight());
 			        glTexCoord2f(texX2, texY2);
-			        glVertex2f(rect.getX()-sprite.getWidth()/2, rect.getY());
+			        glVertex2f(x-sprite.getWidth()/2, y);
 			        glTexCoord2f(texX, texY2);
-			        glVertex2f(rect.getX()+sprite.getWidth()/2, rect.getY());
+			        glVertex2f(x+sprite.getWidth()/2, y);
 			        glTexCoord2f(texX, texY);
-			        glVertex2f(rect.getX()+sprite.getWidth()/2, rect.getY()-sprite.getHeight());
+			        glVertex2f(x+sprite.getWidth()/2, y-sprite.getHeight());
 		        glEnd();
         	}
         	glDisable(GL_TEXTURE_2D);

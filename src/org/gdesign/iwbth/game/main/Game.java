@@ -46,7 +46,7 @@ public class Game {
 		Game.HEIGHT = height;
 		Game.TSIZE = width/20;
 		Game.font = new TrueTypeFont(new Font("Cordia UPC", Font.PLAIN, 10),true);
-		Game.fontBig = new TrueTypeFont(new Font("Impactr", Font.PLAIN, 64),true);
+		Game.fontBig = new TrueTypeFont(new Font("Impact", Font.PLAIN, 64),true);
 		Game.GSM = new GameStateManager();
 		
 		
@@ -95,7 +95,6 @@ public class Game {
 		Display.setVSyncEnabled(true);
 		while (!Display.isCloseRequested() && isRunning){		
 			int delta = getDelta();
-			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 			updateFPS();
 			
 			GSM.handleEvents();

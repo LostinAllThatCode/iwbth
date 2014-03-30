@@ -68,7 +68,7 @@ public class EntityManager {
 		
 		for (Entity e : entities){
 			e.move(delta);
-			if (e.intersects(player)) player.kill();
+			if (e.rect.intersects(player.rect)) player.kill();
 			for (PlayerShot p : shotsInUse){
 				p.checkCollsion(e);
 			}
@@ -114,13 +114,14 @@ public class EntityManager {
 		trashbin.add(e);
 		KILLCOUNTER++;
 		if (e instanceof Player) {
-			Game.isRunning = false;
+			//Game.isRunning = false;
+			Game.GSM.setState(1);
 		} else {
 			for (int i=1; i<= 5-entities.size(); i++) {
 				EnemyMe enemy = new EnemyMe(myRandom(0,Game.WIDTH),myRandom(0,Game.HEIGHT-200),TextureManager.getSpriteSheet(TextureManager.PLAYER));
 				enemy.setRandomFacing(myRandom(1, 4));
 				addEntity(enemy);
-			}
+			 }
 	 	}		
 	}
 	

@@ -1,5 +1,9 @@
 package org.gdesign.iwbth.game.states;
 
+import static org.lwjgl.opengl.GL11.GL_COLOR_BUFFER_BIT;
+import static org.lwjgl.opengl.GL11.GL_DEPTH_BUFFER_BIT;
+import static org.lwjgl.opengl.GL11.glClear;
+
 import org.gdesign.iwbth.game.audio.AudioManager;
 import org.gdesign.iwbth.game.entity.DebugMonitor;
 import org.gdesign.iwbth.game.entity.EntityManager;
@@ -15,13 +19,11 @@ public class GameStateRunning implements GameState {
 	
 	private DebugMonitor mon;
 	
-	//private GameStateManager gsm;
 	private TileMap currentMap;
 	
 	float vol = 1.0f;
 	
-	public GameStateRunning(GameStateManager gsm){
-		//this.gsm = gsm;
+	public GameStateRunning(){
 		this.init();
 	}
 	
@@ -56,6 +58,7 @@ public class GameStateRunning implements GameState {
 
 	@Override
 	public void draw() {
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		currentMap.draw();
 		EntityManager.draw();
 	}

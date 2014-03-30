@@ -104,20 +104,22 @@ public class Player extends Entity {
 			if (!isJumping) currentAnimationState = PLAYER_ANIMATION_WALK;
 		}
 		
-		this.rect.translate((int) velX,(int) velY);
+		this.x += velX;
+		this.y += velY;
 		
-		if (isGrounded() && jumpc > 0) {
-			
+		if (isGrounded() && jumpc > 0) {		
 			currentJumpSpeed = 0;			
 			velY = 0;
 			jumpc = 0;
 			if (!ControllerManager.isJumpPressed()) isJumping = false;					
 		}
+		
+		setLocation(x, y);
 	}
 	
 	private boolean  isGrounded(){
-		if (this.rect.getY() >= 520) {
-			this.rect.setY(520);
+		if (y >= 520) {
+			this.setLocation(x, 520);
 			return true; 
 		}
 		else return false;
@@ -144,24 +146,24 @@ public class Player extends Entity {
         	if (facing == 1){
 			    glBegin(GL_QUADS);
 			        glTexCoord2f(texX, texY);
-			        glVertex2f(rect.getX()-sprite.getWidth()/2,rect.getY()-sprite.getHeight());
+			        glVertex2f(x-sprite.getWidth()/2,y-sprite.getHeight());
 			        glTexCoord2f(texX, texY2);
-			        glVertex2f(rect.getX()-sprite.getWidth()/2, rect.getY());
+			        glVertex2f(x-sprite.getWidth()/2, y);
 			        glTexCoord2f(texX2, texY2);
-			        glVertex2f(rect.getX()+sprite.getWidth()/2, rect.getY());
+			        glVertex2f(x+sprite.getWidth()/2, y);
 			        glTexCoord2f(texX2, texY);
-			        glVertex2f(rect.getX()+sprite.getWidth()/2, rect.getY()-sprite.getHeight());
+			        glVertex2f(x+sprite.getWidth()/2, y-sprite.getHeight());
 		        glEnd();
         	} else {
     		    glBegin(GL_QUADS);
 			    	glTexCoord2f(texX2, texY);
-			    	glVertex2f(rect.getX()-sprite.getWidth()/2,rect.getY()-sprite.getHeight());
+			    	glVertex2f(x-sprite.getWidth()/2,y-sprite.getHeight());
 			        glTexCoord2f(texX2, texY2);
-			        glVertex2f(rect.getX()-sprite.getWidth()/2, rect.getY());
+			        glVertex2f(x-sprite.getWidth()/2, y);
 			        glTexCoord2f(texX, texY2);
-			        glVertex2f(rect.getX()+sprite.getWidth()/2, rect.getY());
+			        glVertex2f(x+sprite.getWidth()/2, y);
 			        glTexCoord2f(texX, texY);
-			        glVertex2f(rect.getX()+sprite.getWidth()/2, rect.getY()-sprite.getHeight());
+			        glVertex2f(x+sprite.getWidth()/2, y-sprite.getHeight());
 		        glEnd();
         	}
         	glDisable(GL_TEXTURE_2D);
@@ -246,7 +248,7 @@ public class Player extends Entity {
 		if (time - lastShot >= 150 && canShoot) {
 			lastShot = time;
 			canShoot = false;
-			EntityManager.addShot(this.rect.getX(), this.rect.getY()-this.rect.getHeight()/2, facing);
+			EntityManager.addShot(x, y-this.rect.getHeight()/2, facing);
 			AudioManager.playFX(AudioManager.SOUND_FX_SHOT);
 		}
 	}
