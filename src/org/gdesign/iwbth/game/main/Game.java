@@ -10,7 +10,6 @@ import org.gdesign.iwbth.game.states.GameStateManager;
 import org.gdesign.iwbth.game.texture.TextureManager;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.Sys;
-import org.lwjgl.openal.AL;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
 import org.newdawn.slick.Color;
@@ -18,9 +17,6 @@ import org.newdawn.slick.TrueTypeFont;
 import org.newdawn.slick.opengl.TextureImpl;
 
 public class Game {
-
-	public static int WIDTH,HEIGHT,TSIZE;
-	public static GameStateManager GSM;
 	
 	protected static long lastFPS;
 	public static int fps;
@@ -29,28 +25,17 @@ public class Game {
 
 	public static boolean isRunning = false;
 	
-	public static boolean showTileGrid = false;
-	
 	public Game(int width, int height) throws LWJGLException{
 		initOpenGL(width,height);
-		
-		TextureManager.init();
-		
-		Game.WIDTH = width;
-		Game.HEIGHT = height;
-		Game.TSIZE = width/20;
+
 		Game.font = new TrueTypeFont(new Font("Cordia UPC", Font.PLAIN, 10),true);
-		Game.fontBig = new TrueTypeFont(new Font("Impact", Font.PLAIN, 60),true);
-		Game.GSM = new GameStateManager();	
-		
-		Game.lastFPS = getTime();
+		Game.fontBig = new TrueTypeFont(new Font("Impact", Font.PLAIN, 30),true);	
+		Game.lastFPS = getTime();	
 		
 		getDelta();
 		
 		//ControllerManager.bindKeys();
 	
-		AudioManager.init();
-		
 		//setDisplayMode(Game.WIDTH, Game.HEIGHT, true);
 	}
 	
@@ -61,9 +46,8 @@ public class Game {
 	
 	private void initOpenGL(int width, int height) throws LWJGLException{
 		Display.setDisplayMode(new DisplayMode(width,height));
-		Display.setVSyncEnabled(true);
 		Display.create();
-	
+		Display.setVSyncEnabled(true);
         glEnable(GL_TEXTURE_RECTANGLE_ARB);
         glEnable(GL_CULL_FACE);
         glCullFace(GL_BACK);
@@ -81,25 +65,25 @@ public class Game {
 		glMatrixMode(GL_PROJECTION);
 		glLoadIdentity();
 		glOrtho(0, width, height, 0, 1, -1);
-		glMatrixMode(GL_MODELVIEW);
-		
+		glMatrixMode(GL_MODELVIEW);		
 	}
 	
 	private void gameLoop(){
-		Display.setVSyncEnabled(true);
+		TextureManager.init();
+		GameStateManager.init();
 		while (!Display.isCloseRequested() && isRunning){		
 			int delta = getDelta();
 			updateFPS();
-			
-			GSM.handleEvents();
-			GSM.update(delta);
-			GSM.draw();
+			GameStateManager.handleEvents();
+			GameStateManager.update();
+			GameStateManager.move(delta);
+			GameStateManager.draw();
 			
 			Display.sync(60);
 			Display.update();
 		}
-		GSM.cleanUp();
-		AL.destroy();
+		GameStateManager.cleanUp();
+		AudioManager.close();
 	}
 	
 	
@@ -112,9 +96,7 @@ public class Game {
 		}
 		Game.fps++;
 	}
-	
-
-	
+		
 	public int getDelta() {
 	    long time = getTime();
 	    int delta = (int) (time - lastFrame);
@@ -177,7 +159,7 @@ public class Game {
 	}
 	
 	public static void drawString(int x, int y, String text, Color color){
-		glDisable(GL_TEXTURE_2D);
+		glDisable(GL_TEXTURE_RECTANGLE_ARB);
 		TextureImpl.bindNone();
 		Color.white.bind();
 		Game.font.drawString(x, y, text ,color);
@@ -185,7 +167,6 @@ public class Game {
 		glBindTexture(GL_TEXTURE_2D,0);
 		glEnable(GL_TEXTURE_RECTANGLE_ARB);
 	}
-	
 	
 	public static void drawBigString(int x, int y, String text, Color color){
 		glDisable(GL_TEXTURE_RECTANGLE_ARB);

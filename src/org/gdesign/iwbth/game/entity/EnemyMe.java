@@ -3,6 +3,7 @@ package org.gdesign.iwbth.game.entity;
 import static org.lwjgl.opengl.ARBTextureRectangle.GL_TEXTURE_RECTANGLE_ARB;
 import static org.lwjgl.opengl.GL11.*;
 
+import org.gdesign.iwbth.game.main.Constants;
 import org.gdesign.iwbth.game.main.Game;
 import org.gdesign.iwbth.game.texture.Sprite;
 import org.gdesign.iwbth.game.texture.SpriteSheet;
@@ -30,7 +31,7 @@ public class EnemyMe extends Entity {
 	private int	 t = 0;
 
 	public EnemyMe(int x, int y, SpriteSheet spritesheet) {
-		super(x,y,8,17);
+		super(x,y,8,16);
 		this.spritesheet = spritesheet;
 		currentAnimationState = PLAYER_ANIMATION_WALK;
 	}	
@@ -52,28 +53,19 @@ public class EnemyMe extends Entity {
 			velX = .2f*delta*facing;
 
 			if (rect.getX()-velX < 0) facing = 1;
-				else if (rect.getX()+velX >= Game.WIDTH) facing = -1; 	
+				else if (rect.getX()+velX >= Constants.GAME_WIDTH) facing = -1; 	
 			
 		}
 		
 		x += velX;
 		y += velY;
-				
+				 
 		setLocation(x, y);
 	}
-	
-	
-	private boolean  isGrounded(){
-		if (y >= 520) {
-			setLocation(x, 520);
-			return true; 
-		}
-		else return false;
-	}
+
 	
 	@Override
-	public void draw() {
-		
+	public void draw() {		
 		if (spritesheet != null) {
 			glPushMatrix();
 			Sprite sprite = spritesheet.getSprite(getAnimationFrame());

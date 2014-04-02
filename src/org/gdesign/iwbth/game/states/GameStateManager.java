@@ -6,40 +6,49 @@ import org.lwjgl.opengl.Display;
 
 public class GameStateManager {
 	
-	public static final int GAMESTATE_INTRO 		= 0;
-	public static final int GAMESTATE_MENU 			= 1;
-	public static final int GAMESTATE_RUNNING 		= 2;
-	public static final int GAMESTATE_PAUSED 		= 3;
-	public static final int GAMESTATE_OUTRO 		= 4;
+	public static final int GAMESTATE_INIT	 		= 0;
+	public static final int GAMESTATE_INTRO 		= 1;
+	public static final int GAMESTATE_MENU 			= 2;
+	public static final int GAMESTATE_RUNNING 		= 3;
+	public static final int GAMESTATE_PAUSED 		= 4;
+	public static final int GAMESTATE_OUTRO 		= 5;
 
-	private ArrayList<GameState> gamestates = new ArrayList<GameState>();
+	private static ArrayList<GameState> gamestates = new ArrayList<GameState>();
 	
-	private GameState currentstate = null;
+	private static GameState currentstate = null;	
 	
-	public GameStateManager(){
+	public static void init(){
+		gamestates.add(new GameStateInit());
+		gamestates.add(new GameStateIntro());
+		gamestates.add(new GameStateMenu());
 		gamestates.add(new GameStateRunning());
 		gamestates.add(new GameStatePause());
+		gamestates.add(new GameStateOutro());
 		setState(0);
 	}
 	
-	public void setState(int state){
-		this.currentstate = gamestates.get(state);
-		this.currentstate.init();
+	public static void setState(int state){
+		currentstate = gamestates.get(state);
+		currentstate.init();
 	}
 	
-	public void handleEvents(){
-		this.currentstate.handleEvents();
+	public static void handleEvents(){
+		currentstate.handleEvents();
 	}
 	
-	public void update(long delta){	
-		this.currentstate.update(delta);	
+	public static void update(){	
+		currentstate.update();	
 	}
 	
-	public void draw(){
-		this.currentstate.draw();
+	public static void move(long delta){
+		currentstate.move(delta);
 	}
 	
-	public void cleanUp(){
+	public static void draw(){
+		currentstate.draw();
+	}
+	
+	public static void cleanUp(){
 		Display.destroy();
 	}
 	

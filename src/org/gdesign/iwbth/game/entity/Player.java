@@ -5,9 +5,12 @@ import static org.lwjgl.opengl.GL11.*;
 
 import org.gdesign.iwbth.game.audio.AudioManager;
 import org.gdesign.iwbth.game.input.ControllerManager;
+import org.gdesign.iwbth.game.main.Constants;
 import org.gdesign.iwbth.game.main.Game;
 import org.gdesign.iwbth.game.texture.Sprite;
 import org.gdesign.iwbth.game.texture.SpriteSheet;
+import org.gdesign.iwbth.game.tilemap.MapManager;
+import org.gdesign.iwbth.game.tilemap.MapManager.Shift;
 
 public class Player extends Entity {	
 
@@ -21,7 +24,6 @@ public class Player extends Entity {
 	private int currentAnimationState = PLAYER_ANIMATION_WALK;
 	private int currentFrame = 1;	
 	private int jumpc = 0;
-	private int facing = 1;
 	
 	private boolean isJumping = false;
 	private boolean canShoot = true;
@@ -104,20 +106,30 @@ public class Player extends Entity {
 			if (!ControllerManager.isJumpPressed()) isJumping = false;					
 		}
 		
-		setLocation(x, y);
-	}
-	
-	private boolean  isGrounded(){
-		if (y >= 520) {
-			this.setLocation(x, 520);
-			return true; 
+		if (x > Constants.GAME_WIDTH) {
+			MapManager.shiftMap(Shift.RIGHT);
+			setLocation(0, y);
 		}
-		else return false;
+		if (x < 0) {
+			MapManager.shiftMap(Shift.LEFT);
+			setLocation(Constants.GAME_WIDTH, y);
+		}
+		if (y > Constants.GAME_HEIGHT) {
+			MapManager.shiftMap(Shift.DOWN);
+			setLocation(x, 0);
+		}
+		if (y < 0) {
+			MapManager.shiftMap(Shift.UP);
+			setLocation(x, Constants.GAME_HEIGHT);
+		} 
+		
+		setLocation(x,y);
+		
+		
 	}
 	
 	@Override
-	public void draw() {
-		
+	public void draw() {		
 		if (spritesheet != null) {
 			glPushMatrix();
 			Sprite sprite = spritesheet.getSprite(getAnimationFrame());
@@ -163,16 +175,16 @@ public class Player extends Entity {
 	
 	public String getCurrentAnimationState(){
 		switch (currentAnimationState) {
-		case 1:
-			return "idle";
-		case 2:
-			return "walk";
-		case 3:
-			return "jump";
-		case 4:
-			return "fall";
-		default:
-			return "NOT DEFINED YET";
+			case 1:
+				return "idle";
+			case 2:
+				return "walk";
+			case 3:
+				return "jump";
+			case 4:
+				return "fall";
+			default:
+				return "NOT DEFINED YET";
 		}
 	}
 	
@@ -219,12 +231,12 @@ public class Player extends Entity {
 		return currentFrame;
 	}
 
-	public double getVelocityX(){
-		return velX;
+	public int getVelocityX(){
+		return (int) velX;
 	}
 	
-	public double getVelocityY(){
-		return velY;
+	public int getVelocityY(){
+		return (int) velY;
 	}
 	
 	public int getJumpCount(){
@@ -236,7 +248,7 @@ public class Player extends Entity {
 		if (time - lastShot >= 150 && canShoot) {
 			lastShot = time;
 			canShoot = false;
-			EntityManager.addShot(x, y-this.rect.getHeight()/2, facing);
+			EntityManager.addShot(this);
 			AudioManager.playFX(AudioManager.SOUND_FX_SHOT);
 		}
 	}

@@ -5,29 +5,30 @@ import java.util.ArrayList;
 
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.gdesign.iwbth.game.main.Constants;
 import org.xml.sax.SAXException;
 
 public class TextureManager {
 	
 	private static boolean initialized = false;
+	
 	private static ArrayList<SpriteSheet> spritesheets = new ArrayList<SpriteSheet>();
 	
 	public static final int WORLD 	= 0;
 	public static final int PLAYER 	= 1;
 	
-	public static boolean init(){
-		try {
-			spritesheets.add(new SpriteSheet("world/spritesheet.xml"));
-			spritesheets.add(new SpriteSheet("entity/player.xml"));
-			return initialized = true;
-		} catch (ParserConfigurationException e) {
-			e.printStackTrace();
-		} catch (SAXException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
+	public static void init(){
+		if (!initialized) {	
+			try {
+				System.out.println(Constants.getCurrentTimeStamp()+" [TEXTUREMANAGER] : Initializing textures...");
+				spritesheets.add(new SpriteSheet("world/spritesheet.xml"));
+				spritesheets.add(new SpriteSheet("entity/player.xml"));
+				System.out.println(Constants.getCurrentTimeStamp()+" [TEXTUREMANAGER] : Textures loaded																																							.");
+				initialized = true;
+			} catch (ParserConfigurationException | SAXException | IOException e) {
+				System.err.println(Constants.getCurrentTimeStamp()+" [TEXTUREMANAGER] : "+e.getMessage());	
+			}
 		}
-		return initialized = false;
 	}
 	
 	public static SpriteSheet getSpriteSheet(int spritesheet){
@@ -39,8 +40,12 @@ public class TextureManager {
 	}
 	
 	public static void cleanUp(){
-		for (SpriteSheet s : spritesheets){
-			s.cleanUp();
+		if (initialized){
+			for (SpriteSheet s : spritesheets){
+				s.cleanUp();
+			}
 		}
 	}
+	
+	public static boolean initialized(){return initialized;}
 }

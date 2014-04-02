@@ -3,8 +3,11 @@ package org.gdesign.iwbth.game.tilemap;
 import static org.lwjgl.opengl.ARBTextureRectangle.GL_TEXTURE_RECTANGLE_ARB;
 import static org.lwjgl.opengl.GL11.*;
 
+import org.gdesign.iwbth.game.entity.Entity;
+import org.gdesign.iwbth.game.main.Constants;
 import org.gdesign.iwbth.game.main.Game;
 import org.gdesign.iwbth.game.texture.Sprite;
+import org.lwjgl.util.Rectangle;
 
 public class Tile {
 	
@@ -18,13 +21,13 @@ public class Tile {
 		this.sprite = sprite;
 	}
 	
-	public void update(long delta){
+	public void update(){
 
 	}
 	
-	public void translate(int dx, int dy){
-		this.x += dx;
-		this.y += dy;
+	public void move(long delta) {
+		// TODO Auto-generated method stub
+		
 	}
 	
 	public void draw(){
@@ -38,8 +41,9 @@ public class Tile {
 	        int ty  = sprite.getY();
 	        int tx2 = sprite.getX() + sprite.getWidth();
 	        int ty2 = sprite.getY() + sprite.getHeight();
+	                
+	        glColor3f(1,1,1);
 	        
-	        glColor3f(1, 1, 1);
 	        glBegin(GL_QUADS);
 		        glTexCoord2f(tx, ty);
 		        glVertex2f(x, y);
@@ -67,9 +71,9 @@ public class Tile {
 	        glDisable(GL_COLOR);
 		}
 		
-		if (Game.showTileGrid){
+		if (Constants.DEBUG_GRID){
 			glEnable(GL_COLOR);
-	        glColor4f(1, 1, 1,.2f);
+	        glColor4f(1, 1, 1,.8f);
 	        glBegin(GL_LINE_LOOP);
 	        	glVertex2f(x, y);
 		        glVertex2f(x, y+tilesize);
@@ -81,4 +85,19 @@ public class Tile {
 		
 		glPopMatrix();
 	}
+	
+	public void translate(int dx, int dy){
+		this.x += dx;
+		this.y += dy;
+	}
+	
+	public boolean intersects(Entity e){
+		if (sprite != null){
+			return (e.intersects(new Rectangle(x,y,tilesize,tilesize)));
+		} else return false;
+	}
+	
+	public int getX() { return x; }
+	public int getY() { return y; }
+
 }

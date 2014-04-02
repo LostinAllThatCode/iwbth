@@ -2,63 +2,33 @@ package org.gdesign.iwbth.game.tilemap;
 
 import java.util.ArrayList;
 
-import org.gdesign.iwbth.game.main.Game;
-import org.gdesign.iwbth.game.texture.TextureManager;
-
-import static org.gdesign.iwbth.game.texture.TextureManager.*;
+import org.gdesign.iwbth.game.main.Constants;
 
 public class TileMap {
 	
-	private int tilesize;
-	
 	private int offsetx=0,offsety=0;
-	
-	private int[][] level1 = {	{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-								{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-								{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-								{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-								{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-								{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-								{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-								{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-								{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-								{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-								{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-								{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-								{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-								{2,2,2,2,2,2,2,2,2,2,2,3,3,2,2,2,2,2,2,2,4,2,3,2,2,2,2,2,2,1,2,2,2,2,2,2,2,2,2,6},
-								{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
-								};
 	
 	private ArrayList<ArrayList<Tile>> currentMap = new ArrayList<ArrayList<Tile>>();
 	
-	public TileMap(String level){
-		this.tilesize = Game.TSIZE;
-		int x = 0 ,y = 0;
-		for (int j=0;j<level1.length;j++){
-			currentMap.add(new ArrayList<Tile>());
-			for (int i=0;i<level1[0].length;i++){
-				currentMap.get(j).add(new Tile(x,y,tilesize,TextureManager.getSpriteFromSpriteSheet(WORLD, level1[j][i])));
-				x += tilesize;
-			}
-			x = 0;
-			y += tilesize;
-		}
+	public TileMap(){
 	}
 	
-	public void update(long delta){
+	public void addTileSet(ArrayList<Tile> tileset){
+		currentMap.add(tileset);
+	}
+
+	public void update() {
 		for (int j=offsety; j < offsety+15;j++) {
 			for (int i=offsetx;i< offsetx+20;i++){
-				currentMap.get(j).get(i).update(delta);
+				currentMap.get(j).get(i).update();
 			}
 		}
 	}
-	
-	
-	public void translate(int dx, int dy){
+
+	public void move(long delta) {
 		for (int j=offsety; j < offsety+15;j++) {
 			for (int i=offsetx;i< offsetx+20;i++){
-				currentMap.get(j).get(i).translate(dx, dy);
+				currentMap.get(j).get(i).move(delta);
 			}
 		}
 	}
@@ -68,13 +38,13 @@ public class TileMap {
 			for (int i=offsetx;i< offsetx+20;i++){
 				currentMap.get(j).get(i).draw();
 			}
-		}
-		
+		}	
 	}
 	
-	public int getTileAtLocation(int x, int y){
-		int j = x / tilesize,i = y / tilesize;
-		return i*j;
+	public Tile getTileAtLocation(int x, int y){
+		int j = (y / Constants.GAME_TILESIZE) + offsety;
+		int i = (x / Constants.GAME_TILESIZE) + offsetx;
+		return currentMap.get(j).get(i);
 	}
 
 	public int getOffsetx() {
@@ -82,7 +52,7 @@ public class TileMap {
 	}
   
 	public void setOffsetx(int offsetx) {
-		this.offsetx = offsetx;
+		this.offsetx += offsetx;
 	}
 
 	public int getOffsety() {
@@ -90,6 +60,15 @@ public class TileMap {
 	}
 
 	public void setOffsety(int offsety) {
-		this.offsety = offsety;
+		this.offsety += offsety;
 	}
+	
+	@Override
+	public String toString() {
+		String toString = "";
+		toString += "MapSize: "+currentMap.size()+"x"+currentMap.get(0).size();
+		return toString;
+	}
+
+
 }

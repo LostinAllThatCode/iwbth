@@ -3,26 +3,31 @@ package org.gdesign.iwbth.game.entity;
 import static org.lwjgl.opengl.ARBTextureRectangle.GL_TEXTURE_RECTANGLE_ARB;
 import static org.lwjgl.opengl.GL11.*;
 
-import org.gdesign.iwbth.game.main.Game;
+import org.gdesign.iwbth.game.main.Constants;
 import org.gdesign.iwbth.game.texture.Sprite;
 import org.gdesign.iwbth.game.texture.SpriteSheet;
 
 public class PlayerShot extends Entity {
 	
+	private static int instanceCounter=1;
+	
 	private final int SPRITE_ID = 14;
-	private float speed = 0.6f;
-	private int dir = 0;	
+	private float speed = 0.6f;	
 	private boolean hasCollided;
+	private String collidedWith;
+	private int id = 0;
 
 	public PlayerShot(int x, int y, SpriteSheet spritesheet) {
 		super(x, y, 5,5);
+		this.id = instanceCounter++;
 		this.spritesheet = spritesheet;
 	}
 
-	public void setDirection(int x, int y, int dir){
-		this.dir = dir;
-		setLocation(x, y);
+	public void setSpawn(int x, int y, int dir){
+		this.facing = dir;
 		this.hasCollided = false;
+		this.collidedWith = "none";
+		setLocation(x, y);
 	}
 	
 	@Override
@@ -59,12 +64,13 @@ public class PlayerShot extends Entity {
 	
 	@Override
 	public void move(long delta) {
-		if (this.rect.getX() >= Game.WIDTH  || this.rect.getX() <= 0) {
+		if (this.rect.getX() >= Constants.GAME_WIDTH || this.rect.getX() <= 0) {
 			hasCollided = true;
-			EntityManager.removeShot(this);
+			EntityManager.remove(this);
+			this.collidedWith = "world";
 		}
 		if (!hasCollided) {
-			this.x += (speed*delta*dir);
+			this.x += (speed*delta*facing);
 			setLocation(x, y);
 		}
 	}
@@ -72,8 +78,14 @@ public class PlayerShot extends Entity {
 	public void checkCollsion(Entity e){
 		if (rect.intersects(e.rect)) {
 			hasCollided = true;
-			EntityManager.removeShot(this);
-			EntityManager.removeEntity(e);
+			EntityManager.remove(this);
+			EntityManager.remove(e);
+			this.collidedWith = e.getClass().getSimpleName();
 		}
+	}
+	
+	@Override
+	public String toString() {
+		return "["+id+"|x:"+x+"|y:"+y +  ((collidedWith.compareTo("none") == 0) ? "]" : "|collision:"+collidedWith);
 	}
 }
