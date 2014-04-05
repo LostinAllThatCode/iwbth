@@ -5,8 +5,10 @@ import static org.lwjgl.opengl.GL11.GL_DEPTH_BUFFER_BIT;
 import static org.lwjgl.opengl.GL11.glClear;
 
 import org.gdesign.iwbth.game.audio.AudioManager;
+import org.gdesign.iwbth.game.entity.EntityManager;
 import org.gdesign.iwbth.game.main.Constants;
 import org.gdesign.iwbth.game.main.Game;
+import org.gdesign.iwbth.game.tilemap.MapManager;
 import org.lwjgl.input.Keyboard;
 import org.newdawn.slick.Color;
 
@@ -42,7 +44,9 @@ public class GameStatePause implements GameState {
 	@Override
 	public void draw() {
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		Game.drawBigString(Constants.GAME_WIDTH/2-200, Constants.GAME_HEIGHT-200, "ENTER TO RESTART", Color.blue);
+		MapManager.draw();
+		EntityManager.draw();
+		Game.drawf2String(Constants.GAME_WIDTH/2-150, Constants.GAME_HEIGHT/2-50, "LOL YOU DIED", Color.white);
 		
 	}
 

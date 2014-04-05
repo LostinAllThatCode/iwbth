@@ -5,6 +5,7 @@ import java.util.Vector;
 
 import org.gdesign.iwbth.game.audio.AudioManager;
 import org.gdesign.iwbth.game.main.Constants;
+import org.gdesign.iwbth.game.main.Functions;
 import org.gdesign.iwbth.game.states.GameStateManager;
 import org.gdesign.iwbth.game.texture.TextureManager;
 
@@ -26,15 +27,15 @@ public class EntityManager {
 	
 	
 	public static void init(){
-		System.out.println(Constants.getCurrentTimeStamp()+" [ENTITYMANAGER] : Initializing entites...");	
+		System.out.println(Functions.getTimeStamp()+" [ENTITYMANAGER] : Initializing entites...");	
 		shotsMaximum = Constants.PLAYER_MAXSHOTS;
-		System.out.println(Constants.getCurrentTimeStamp()+" [ENTITYMANAGER] : PlayerShots maximum is set to "+shotsMaximum);	
+		System.out.println(Functions.getTimeStamp()+" [ENTITYMANAGER] : PlayerShots maximum is set to "+shotsMaximum);	
 		while (shotsAvailable.size() < 10)
 			shotsAvailable.add(new PlayerShot(0, 0,TextureManager.getSpriteSheet(TextureManager.PLAYER)));
-		System.out.println(Constants.getCurrentTimeStamp()+" [ENTITYMANAGER] : PlayerShots entites loaded.");
+		System.out.println(Functions.getTimeStamp()+" [ENTITYMANAGER] : PlayerShots entites loaded.");
 		
 		add(new Monitor(0,0,0,0));
-		add(new Player(150,0,TextureManager.getSpriteSheet(TextureManager.PLAYER)));	
+		add(new Player(150,200,TextureManager.getSpriteSheet(TextureManager.PLAYER)));	
 	}
 	
 	public static void add(Entity e){
@@ -45,7 +46,7 @@ public class EntityManager {
 		} else {
 			spawn.add(e);
 		}
-		System.out.println(Constants.getCurrentTimeStamp()+" [ENTITYMANAGER] : Entity -> "+e+" added.");
+		System.out.println(Functions.getTimeStamp()+" [ENTITYMANAGER] : Entity -> "+e+" added.");
 	}
 	
 	public static void addShot(Entity parent){		
@@ -64,7 +65,7 @@ public class EntityManager {
 	
 	public static void update(){		
 		/*
-		for (int i=1; i<= 1-entities.size(); i++) {
+		for (int i=1; i<= 5-entities.size(); i++) {
 			EnemyMe enemy = new EnemyMe(myRandom(0,Constants.GAME_WIDTH),myRandom(0,Constants.GAME_HEIGHT-200),TextureManager.getSpriteSheet(TextureManager.PLAYER));
 			enemy.setRandomFacing(myRandom(1, 4));
 			add(enemy);
@@ -79,7 +80,7 @@ public class EntityManager {
 		
 		while (!free.isEmpty()) {
 			entities.remove(free.get(0));
-			System.out.println(Constants.getCurrentTimeStamp()+" [ENTITYMANAGER] : Entity -> "+free.get(0)+" removed.");
+			System.out.println(Functions.getTimeStamp()+" [ENTITYMANAGER] : Entity -> "+free.get(0)+" removed.");
 			free.remove(0);
 		}
 	}
@@ -95,7 +96,7 @@ public class EntityManager {
 			e.move(delta);
 			if (e.rect.intersects(player.rect)) player.kill();
 			for (PlayerShot p : shotsInUse){
-				p.checkCollsion(e);
+				p.checkEntityCollsion(e);
 			}
 		}
 	}
@@ -131,7 +132,7 @@ public class EntityManager {
 	}
 	
 	public static int getEntityCount(){
-		return entities.size() + shotsInUse.size() + 1;
+		return entities.size() + 1; //shotsInUse.size();
 	}
 	
 	//TODO: REMOVE THIS TEMPORARY FUNCTION

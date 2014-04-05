@@ -6,6 +6,8 @@ import static org.lwjgl.opengl.GL11.*;
 import org.gdesign.iwbth.game.main.Constants;
 import org.gdesign.iwbth.game.texture.Sprite;
 import org.gdesign.iwbth.game.texture.SpriteSheet;
+import org.gdesign.iwbth.game.tilemap.MapManager;
+import org.gdesign.iwbth.game.tilemap.Tile;
 
 public class PlayerShot extends Entity {
 	
@@ -33,49 +35,80 @@ public class PlayerShot extends Entity {
 	@Override
 	public void draw() {
 		super.draw();
-		glPushMatrix();
-		
-		Sprite sprite = spritesheet.getSprite(SPRITE_ID);
-		
-        glBindTexture(GL_TEXTURE_RECTANGLE_ARB, sprite.getTexture());
-        glColor3f(1, 1, 1);
-        int texX  = sprite.getX();
-        int texY  = sprite.getY();
-        int texX2 = sprite.getX() + sprite.getWidth();
-        int texY2 = sprite.getY() + sprite.getHeight();
-        
-       
-        glEnable(GL_TEXTURE_RECTANGLE_ARB);
-	    glBegin(GL_QUADS);
-	        glTexCoord2f(texX, texY);
-	        glVertex2f(x-sprite.getWidth()/2, y-sprite.getHeight());
-	        glTexCoord2f(texX, texY2);
-	        glVertex2f(x-sprite.getWidth()/2, y);
-	        glTexCoord2f(texX2, texY2);
-	        glVertex2f(x+sprite.getWidth()/2, y);
-	        glTexCoord2f(texX2, texY);
-	        glVertex2f(x+sprite.getWidth()/2, y-sprite.getHeight());
-        glEnd();
-        glDisable(GL_TEXTURE_RECTANGLE_ARB);
-    	glBindTexture(GL_TEXTURE_RECTANGLE_ARB, 0);
-        
-    	glPopMatrix();
+		if (!hasCollided){
+			glPushMatrix();
+			
+			Sprite sprite = spritesheet.getSprite(SPRITE_ID);
+			
+	        glBindTexture(GL_TEXTURE_RECTANGLE_ARB, sprite.getTexture());
+	        glColor3f(1, 1, 1);
+	        int texX  = sprite.getX();
+	        int texY  = sprite.getY();
+	        int texX2 = sprite.getX() + sprite.getWidth();
+	        int texY2 = sprite.getY() + sprite.getHeight();
+	        
+	       
+	        glEnable(GL_TEXTURE_RECTANGLE_ARB);
+		    glBegin(GL_QUADS);
+		        glTexCoord2f(texX, texY);
+		        glVertex2f(x-sprite.getWidth()/2, y-sprite.getHeight());
+		        glTexCoord2f(texX, texY2);
+		        glVertex2f(x-sprite.getWidth()/2, y);
+		        glTexCoord2f(texX2, texY2);
+		        glVertex2f(x+sprite.getWidth()/2, y);
+		        glTexCoord2f(texX2, texY);
+		        glVertex2f(x+sprite.getWidth()/2, y-sprite.getHeight());
+	        glEnd();
+	     
+	    	glBindTexture(GL_TEXTURE_RECTANGLE_ARB, 0);
+	    	glDisable(GL_TEXTURE_RECTANGLE_ARB);
+	    	glPopMatrix();
+		}
 	}
 	
 	@Override
 	public void move(long delta) {
-		if (this.rect.getX() >= Constants.GAME_WIDTH || this.rect.getX() <= 0) {
-			hasCollided = true;
-			EntityManager.remove(this);
-			this.collidedWith = "world";
-		}
+		velX = speed*delta*facing;
+		checkMapCollision();
 		if (!hasCollided) {
-			this.x += (speed*delta*facing);
+			this.x += velX;
 			setLocation(x, y);
 		}
 	}
 	
-	public void checkCollsion(Entity e){
+	@Override
+	public void checkMapCollision() {
+		Tile t;
+		if (this.rect.getX() >= Constants.GAME_WIDTH || this.rect.getX() <= 0) {
+			hasCollided = true;
+			EntityManager.remove(this);
+			this.collidedWith = "world";
+			return;
+		}
+		t = MapManager.getTileConnectedToEntity(this, MapManager.LEFT);
+		if (t != null)
+			if (t.getId() > 0 && t.getId() < 20 && velX < 0){
+				if (t.intersects(this)) {
+					hasCollided = true;
+					EntityManager.remove(this);
+					this.collidedWith = t.getClass().getSimpleName();
+					return;
+				}
+			}
+		t = MapManager.getTileConnectedToEntity(this, MapManager.RIGHT);
+		if (t != null)
+		if (t.getId() > 0 && t.getId() < 20 && velX > 0) {
+			if (t.intersects(this)) {
+				hasCollided = true;
+				EntityManager.remove(this);
+				this.collidedWith = t.getClass().getSimpleName();
+				return;
+			}
+		}
+	}
+	
+	
+	public void checkEntityCollsion(Entity e){
 		if (rect.intersects(e.rect)) {
 			hasCollided = true;
 			EntityManager.remove(this);
@@ -83,6 +116,7 @@ public class PlayerShot extends Entity {
 			this.collidedWith = e.getClass().getSimpleName();
 		}
 	}
+	
 	
 	@Override
 	public String toString() {

@@ -3,7 +3,7 @@ package org.gdesign.iwbth.game.audio;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import org.gdesign.iwbth.game.main.Constants;
+import org.gdesign.iwbth.game.main.Functions;
 import org.lwjgl.openal.AL;
 import org.newdawn.slick.openal.Audio;
 import org.newdawn.slick.openal.AudioLoader;
@@ -32,12 +32,12 @@ public class AudioManager {
 				@Override
 				public void run() {	
 					try {
-						System.out.println(Constants.getCurrentTimeStamp()+" [AUDIOMANAGER] : Initializing sounds...");
+						System.out.println(Functions.getTimeStamp()+" [AUDIOMANAGER] : Initializing sounds...");
 						sounds.add(AudioLoader.getAudio("OGG", ResourceLoader.getResourceAsStream("sound/bgmusic.ogg")));
 						sounds.add(AudioLoader.getAudio("OGG", ResourceLoader.getResourceAsStream("sound/jump.ogg")));
 						sounds.add(AudioLoader.getAudio("OGG", ResourceLoader.getResourceAsStream("sound/pew2.ogg")));
 						sounds.add(AudioLoader.getAudio("OGG", ResourceLoader.getResourceAsStream("sound/dying1.ogg")));
-						System.out.println(Constants.getCurrentTimeStamp()+" [AUDIOMANAGER] : Sounds loaded.");
+						System.out.println(Functions.getTimeStamp()+" [AUDIOMANAGER] : Sounds loaded.");
 						currentSound=sounds.get(0);
 						initialized = true;
 					} catch (IOException e) {

@@ -5,7 +5,7 @@ import java.util.ArrayList;
 
 import javax.xml.parsers.ParserConfigurationException;
 
-import org.gdesign.iwbth.game.main.Constants;
+import org.gdesign.iwbth.game.main.Functions;
 import org.xml.sax.SAXException;
 
 public class TextureManager {
@@ -20,13 +20,13 @@ public class TextureManager {
 	public static void init(){
 		if (!initialized) {	
 			try {
-				System.out.println(Constants.getCurrentTimeStamp()+" [TEXTUREMANAGER] : Initializing textures...");
+				System.out.println(Functions.getTimeStamp()+" [TEXTUREMANAGER] : Initializing textures...");
 				spritesheets.add(new SpriteSheet("world/spritesheet.xml"));
 				spritesheets.add(new SpriteSheet("entity/player.xml"));
-				System.out.println(Constants.getCurrentTimeStamp()+" [TEXTUREMANAGER] : Textures loaded																																							.");
+				System.out.println(Functions.getTimeStamp()+" [TEXTUREMANAGER] : Textures loaded																																							.");
 				initialized = true;
 			} catch (ParserConfigurationException | SAXException | IOException e) {
-				System.err.println(Constants.getCurrentTimeStamp()+" [TEXTUREMANAGER] : "+e.getMessage());	
+				System.err.println(Functions.getTimeStamp()+" [TEXTUREMANAGER] : "+e.getMessage());	
 			}
 		}
 	}

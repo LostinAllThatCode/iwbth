@@ -7,6 +7,7 @@ import org.gdesign.iwbth.game.main.Constants;
 import org.gdesign.iwbth.game.main.Game;
 import org.gdesign.iwbth.game.texture.Sprite;
 import org.gdesign.iwbth.game.texture.SpriteSheet;
+import org.gdesign.iwbth.game.tilemap.MapManager;
 
 public class EnemyMe extends Entity {
 	
@@ -42,27 +43,39 @@ public class EnemyMe extends Entity {
 	
 	@Override
 	public void move(long delta) {
-		if (!isGrounded()) {
+		if (!isGrounded) {
 			velY += gravity*delta;
 			if (velY > 0) currentAnimationState = PLAYER_ANIMATION_FALL;
 			if (velY < 0) currentAnimationState = PLAYER_ANIMATION_JUMP;
 		} else {
 			velY = 0;
-			currentAnimationState = PLAYER_ANIMATION_WALK;
-			
-			velX = .2f*delta*facing;
-
-			if (rect.getX()-velX < 0) facing = 1;
-				else if (rect.getX()+velX >= Constants.GAME_WIDTH) facing = -1; 	
-			
-		}
-		
-		x += velX;
-		y += velY;
-				 
-		setLocation(x, y);
+			velX = .1f*delta*facing;
+			currentAnimationState = PLAYER_ANIMATION_WALK;					
+		}		
+		checkMapCollision();
 	}
 
+	@Override
+	public void checkMapCollision() {
+		if (MapManager.getTileConnectedToEntity(this, MapManager.LEFT).getId() > 0 && velX < 0){
+			if (MapManager.getTileConnectedToEntity(this, MapManager.LEFT).intersects(this)) facing = 1;
+		}
+		if (MapManager.getTileConnectedToEntity(this, MapManager.RIGHT).getId() > 0 && velX > 0) {
+			if (MapManager.getTileConnectedToEntity(this, MapManager.RIGHT).intersects(this)) facing = -1;
+		}
+		if (MapManager.getTileConnectedToEntity(this, MapManager.UP).getId() > 0 && velY < 0) {
+			if (MapManager.getTileConnectedToEntity(this, MapManager.UP).intersects(this)) velY *= -.15f;
+		}
+		if (MapManager.getTileConnectedToEntity(this, MapManager.DOWN).getId() > 0 && velY > 0) {
+			isGrounded = true;
+			velY = MapManager.getTileConnectedToEntity(this, MapManager.DOWN).getY()-this.getY();
+		} else isGrounded = false;
+			
+		if (x > Constants.GAME_WIDTH || x < 0 || y > Constants.GAME_HEIGHT || y < 0) {
+			kill();
+		}
+		setLocation((int) (x+velX),(int) (y+velY));
+	}
 	
 	@Override
 	public void draw() {		
@@ -72,7 +85,7 @@ public class EnemyMe extends Entity {
 			
 			glEnable(GL_TEXTURE_RECTANGLE_ARB);
 	        glBindTexture(GL_TEXTURE_RECTANGLE_ARB, sprite.getTexture());
-	        glColor4f(0, 0, 0,.5f);
+	        glColor3f(0, 0, 0);
 	        
 	        int texX  = sprite.getX();
 	        int texY  = sprite.getY();

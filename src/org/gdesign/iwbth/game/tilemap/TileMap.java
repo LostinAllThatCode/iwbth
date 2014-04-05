@@ -11,6 +11,7 @@ public class TileMap {
 	private ArrayList<ArrayList<Tile>> currentMap = new ArrayList<ArrayList<Tile>>();
 	
 	public TileMap(){
+		
 	}
 	
 	public void addTileSet(ArrayList<Tile> tileset){
@@ -41,32 +42,32 @@ public class TileMap {
 		}	
 	}
 	
-	public Tile getTileAtLocation(int x, int y){
+	public Tile getTile(int x, int y){
 		int j = (y / Constants.GAME_TILESIZE) + offsety;
 		int i = (x / Constants.GAME_TILESIZE) + offsetx;
-		return currentMap.get(j).get(i);
+		if (i < currentMap.get(0).size() && j < currentMap.size()) return currentMap.get(j).get(i); else return null;
 	}
 
-	public int getOffsetx() {
+	public int getOffsetX() {
 		return offsetx;
 	}
-  
-	public void setOffsetx(int offsetx) {
-		this.offsetx += offsetx;
+ 	
+	public void setOffsetX(int offsetX) {
+		this.offsetx += offsetX;
 	}
 
-	public int getOffsety() {
+	public int getOffsetY() {
 		return offsety;
 	}
 
-	public void setOffsety(int offsety) {
-		this.offsety += offsety;
+	public void setOffsetY(int offsetY) {
+		this.offsety += offsetY;
 	}
 	
 	@Override
 	public String toString() {
 		String toString = "";
-		toString += "MapSize: "+currentMap.size()+"x"+currentMap.get(0).size();
+		toString += "MapSize: "+currentMap.size()+"x"+currentMap.get(0).size()+" Current offset: dX="+offsetx+",dY="+offsety;
 		return toString;
 	}
 

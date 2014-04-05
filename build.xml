@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="IWBTH" basedir=".">
+    <target name="clean" >
+        <delete dir="build"/>
+    </target>
+
+    <target name="compile" depends="clean">
+        <mkdir dir="build/classes"/>
+        <javac srcdir="src" destdir="build/classes" includeantruntime="true"/>
+    </target>
+
+    <target name="jar" depends="compile" description="creates jar file">
+    	<delete file="iwbth.jar" />
+        <jar destfile="iwbth.jar" basedir="build/classes">
+        	<fileset dir="res" />
+            <manifest>
+            	<attribute name="Class-Path" value="lwjgl.jar lwjgl_util.jar jinput.jar jinput-test.jar jorbis-0.0.17-2.jar slick-util.jar"/>
+                <attribute name="Main-Class" value="org.gdesign.iwbth.game.main.Main"/>
+            </manifest>
+        </jar>
+    </target>
+</project>

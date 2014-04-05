@@ -8,4 +8,6 @@
 	<sprite id="4" 	x="120"	y="0" 	w="40" 	h="40" />
 	<sprite id="5" 	x="160"	y="0" 	w="40" 	h="40" />
 	<sprite id="6" 	x="200"	y="0" 	w="40" 	h="40" />
+	<sprite id="7" 	x="240"	y="0" 	w="40" 	h="40" />
+	<sprite id="80" 	x="0"	y="40" 	w="40" 	h="40" />
 </spritesheet>

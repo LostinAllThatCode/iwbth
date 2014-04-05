@@ -8,17 +8,13 @@ import org.gdesign.iwbth.game.audio.AudioManager;
 import org.gdesign.iwbth.game.entity.EntityManager;
 import org.gdesign.iwbth.game.input.ControllerManager;
 import org.gdesign.iwbth.game.main.Constants;
-import org.gdesign.iwbth.game.main.Game;
 import org.gdesign.iwbth.game.tilemap.MapManager;
-import org.gdesign.iwbth.game.tilemap.TileMap;
 import org.lwjgl.input.Keyboard;
 
 
 public class GameStateRunning implements GameState {
 	
 	//TODO: Temporary testing environment. This will be changed dramatically.
-	
-	private TileMap currentMap;
 	
 	float vol = 1.0f;
 	
@@ -42,6 +38,15 @@ public class GameStateRunning implements GameState {
 		}
 		if (Keyboard.isKeyDown(Keyboard.KEY_F11)) AudioManager.play(true);
 		if (Keyboard.isKeyDown(Keyboard.KEY_F12)) AudioManager.stop();
+		
+		if (Keyboard.isKeyDown(Keyboard.KEY_K)) EntityManager.getPlayer().kill();;
+		
+		/*
+		if (Keyboard.isKeyDown(Keyboard.KEY_UP)) EntityManager.getPlayer().translate(0, -1);
+		if (Keyboard.isKeyDown(Keyboard.KEY_DOWN)) EntityManager.getPlayer().translate(0, 1);
+		if (Keyboard.isKeyDown(Keyboard.KEY_LEFT)) EntityManager.getPlayer().translate(-1, 0);
+		if (Keyboard.isKeyDown(Keyboard.KEY_RIGHT)) EntityManager.getPlayer().translate(1, 0);
+		*/
 	}
 
 	@Override
@@ -58,7 +63,7 @@ public class GameStateRunning implements GameState {
 
 	@Override
 	public void draw() {
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		glClear(GL_COLOR_BUFFER_BIT);  //| GL_DEPTH_BUFFER_BIT
 		MapManager.draw();
 		EntityManager.draw();
 	}

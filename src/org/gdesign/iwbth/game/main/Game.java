@@ -4,6 +4,9 @@ import static org.lwjgl.opengl.ARBTextureRectangle.GL_TEXTURE_RECTANGLE_ARB;
 import static org.lwjgl.opengl.GL11.*;
 
 import java.awt.Font;
+import java.awt.FontFormatException;
+import java.io.IOException;
+import java.io.InputStream;
 
 import org.gdesign.iwbth.game.audio.AudioManager;
 import org.gdesign.iwbth.game.states.GameStateManager;
@@ -20,7 +23,7 @@ public class Game {
 	
 	protected static long lastFPS;
 	public static int fps;
-	protected static TrueTypeFont font,fontBig;
+	protected static TrueTypeFont font,fontBig,font2;
 	protected static long lastFrame;
 
 	public static boolean isRunning = false;
@@ -28,6 +31,16 @@ public class Game {
 	public Game(int width, int height) throws LWJGLException{
 		initOpenGL(width,height);
 
+		
+
+		try {
+			InputStream in = ClassLoader.getSystemResourceAsStream("font/ka1.ttf");
+			Game.font2 = new TrueTypeFont(Font.createFont(Font.TRUETYPE_FONT,in).deriveFont(Font.PLAIN,40), false);
+
+		} catch (FontFormatException | IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		Game.font = new TrueTypeFont(new Font("Cordia UPC", Font.PLAIN, 10),true);
 		Game.fontBig = new TrueTypeFont(new Font("Impact", Font.PLAIN, 30),true);	
 		Game.lastFPS = getTime();	
@@ -55,10 +68,11 @@ public class Game {
 		glEnable(GL_TEXTURE_2D);
 		glEnable(GL_BLEND);
 		
+		glClearColor(.7f,.85f,1,1);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 		
 		glShadeModel(GL_SMOOTH);
 		
@@ -78,8 +92,7 @@ public class Game {
 			GameStateManager.update();
 			GameStateManager.move(delta);
 			GameStateManager.draw();
-			
-			Display.sync(60);
+			//Display.sync(30);
 			Display.update();
 		}
 		GameStateManager.cleanUp();
@@ -101,7 +114,6 @@ public class Game {
 	    long time = getTime();
 	    int delta = (int) (time - lastFrame);
 	    lastFrame = time;
-	    
 	    return delta;
 	}
 	
@@ -163,6 +175,16 @@ public class Game {
 		TextureImpl.bindNone();
 		Color.white.bind();
 		Game.font.drawString(x, y, text ,color);
+		Color.white.bind();
+		glBindTexture(GL_TEXTURE_2D,0);
+		glEnable(GL_TEXTURE_RECTANGLE_ARB);
+	}
+	
+	public static void drawf2String(int x, int y, String text, Color color){
+		glDisable(GL_TEXTURE_RECTANGLE_ARB);
+		TextureImpl.bindNone();
+		Color.white.bind();
+		Game.font2.drawString(x, y, text ,color);
 		Color.white.bind();
 		glBindTexture(GL_TEXTURE_2D,0);
 		glEnable(GL_TEXTURE_RECTANGLE_ARB);

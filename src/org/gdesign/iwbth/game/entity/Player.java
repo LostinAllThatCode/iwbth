@@ -10,7 +10,6 @@ import org.gdesign.iwbth.game.main.Game;
 import org.gdesign.iwbth.game.texture.Sprite;
 import org.gdesign.iwbth.game.texture.SpriteSheet;
 import org.gdesign.iwbth.game.tilemap.MapManager;
-import org.gdesign.iwbth.game.tilemap.MapManager.Shift;
 
 public class Player extends Entity {	
 
@@ -28,7 +27,7 @@ public class Player extends Entity {
 	private boolean isJumping = false;
 	private boolean canShoot = true;
 	
-	private float velY = 0, velX = 0, gravity = 0.03f, maxJumpSpeed = 10,currentJumpSpeed = 0;	
+	private float gravity = 0.03f, maxJumpSpeed = 0.55f,currentJumpSpeed = 0;	
 
 	private long lastFrame = Game.getTime();
 	private long lastShot  = Game.getTime();
@@ -43,10 +42,11 @@ public class Player extends Entity {
 	public void move(long delta) {
 		if (ControllerManager.isShootPressed()) shoot(); else canShoot = true;	
 		
-		if (!isGrounded()) {
+		if (!isGrounded) {
 			velY += gravity*delta;
 			if (velY > 0) currentAnimationState = PLAYER_ANIMATION_FALL;
 			if (velY < 0) currentAnimationState = PLAYER_ANIMATION_JUMP;
+			
 		} else {
 			velY = 0;
 			currentAnimationState = PLAYER_ANIMATION_IDLE;
@@ -56,14 +56,14 @@ public class Player extends Entity {
 			if (ControllerManager.isJumpPressed()){
 				if (currentJumpSpeed == 0) AudioManager.playFX(AudioManager.SOUND_FX_JUMP);
 				currentJumpSpeed += 0.1f*delta;
-				if (currentJumpSpeed > maxJumpSpeed) {
-					currentJumpSpeed = maxJumpSpeed;
+				if (currentJumpSpeed > maxJumpSpeed*delta) {
+					currentJumpSpeed = maxJumpSpeed*delta;
 					velY = -currentJumpSpeed;
 					isJumping = true;
 				}
 			}
 			if (!ControllerManager.isJumpPressed() && currentJumpSpeed != 0){
-				if (currentJumpSpeed > maxJumpSpeed) currentJumpSpeed = maxJumpSpeed;
+				if (currentJumpSpeed > maxJumpSpeed*delta) currentJumpSpeed = maxJumpSpeed*delta;
 				velY = -currentJumpSpeed;
 				isJumping = true;
 			}
@@ -73,11 +73,12 @@ public class Player extends Entity {
 		if (ControllerManager.isRightPressed()) velX = (float) Math.floor(0.2f*delta);
 		
 		if (isJumping){
+			isGrounded = false;
 			if (!ControllerManager.isJumpPressed() && jumpc == 0) jumpc=1;
 			if (ControllerManager.isJumpPressed() && jumpc == 1){
 				currentJumpSpeed += 0.1f*delta;
-				if (currentJumpSpeed > maxJumpSpeed*0.75f) {
-					currentJumpSpeed = maxJumpSpeed*0.75f;
+				if (currentJumpSpeed > maxJumpSpeed*0.75f*delta) {
+					currentJumpSpeed = maxJumpSpeed*0.75f*delta;
 					velY = -currentJumpSpeed;
 					jumpc++;
 					AudioManager.playFX(AudioManager.SOUND_FX_JUMP);
@@ -89,43 +90,43 @@ public class Player extends Entity {
 				|| ControllerManager.isLeftPressed() && ControllerManager.isRightPressed()) {
 			velX = 0;
 			if (!isJumping) currentAnimationState = PLAYER_ANIMATION_IDLE; 
-		} else if (ControllerManager.isJumpPressed() && isJumping && isGrounded()){
+		} else if (ControllerManager.isJumpPressed() && isJumping && isGrounded){
 				if (velX != 0) currentAnimationState = PLAYER_ANIMATION_WALK;
 		} else {
 			facing = (int) Math.signum(velX);
 			if (!isJumping) currentAnimationState = PLAYER_ANIMATION_WALK;
 		}
 		
-		this.x += velX;
-		this.y += velY;
+		checkMapCollision();
 		
-		if (isGrounded() && jumpc > 0) {		
+		if (isGrounded && jumpc > 0) {		
 			currentJumpSpeed = 0;			
 			velY = 0;
 			jumpc = 0;
-			if (!ControllerManager.isJumpPressed()) isJumping = false;					
+			if (!ControllerManager.isJumpPressed()) isJumping = false;
 		}
 		
+	}
+	
+	@Override
+	public void checkMapCollision() {
+		super.checkMapCollision();
 		if (x > Constants.GAME_WIDTH) {
-			MapManager.shiftMap(Shift.RIGHT);
+			MapManager.shiftMap(MapManager.RIGHT);
 			setLocation(0, y);
 		}
 		if (x < 0) {
-			MapManager.shiftMap(Shift.LEFT);
+			MapManager.shiftMap(MapManager.LEFT);
 			setLocation(Constants.GAME_WIDTH, y);
 		}
 		if (y > Constants.GAME_HEIGHT) {
-			MapManager.shiftMap(Shift.DOWN);
+			MapManager.shiftMap(MapManager.DOWN);
 			setLocation(x, 0);
 		}
 		if (y < 0) {
-			MapManager.shiftMap(Shift.UP);
+			MapManager.shiftMap(MapManager.UP);
 			setLocation(x, Constants.GAME_HEIGHT);
 		} 
-		
-		setLocation(x,y);
-		
-		
 	}
 	
 	@Override
@@ -251,6 +252,11 @@ public class Player extends Entity {
 			EntityManager.addShot(this);
 			AudioManager.playFX(AudioManager.SOUND_FX_SHOT);
 		}
+	}
+	
+	public void translate(int dx,int dy) {
+		this.velX = dx;
+		this.velY = dy;
 	}
 	
 }
