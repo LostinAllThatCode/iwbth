@@ -71,9 +71,11 @@ public class Player extends Entity {
 		
 		if (ControllerManager.isLeftPressed()) velX = (float) Math.ceil(-0.2f*delta);
 		if (ControllerManager.isRightPressed()) velX = (float) Math.floor(0.2f*delta);
+		facing = (int) Math.signum(velX);
+		
 		
 		if (isJumping){
-			isGrounded = false;
+			if (velY < 0) isGrounded = false;
 			if (!ControllerManager.isJumpPressed() && jumpc == 0) jumpc=1;
 			if (ControllerManager.isJumpPressed() && jumpc == 1){
 				currentJumpSpeed += 0.1f*delta;
@@ -89,21 +91,25 @@ public class Player extends Entity {
 		if (!ControllerManager.isLeftPressed() && !ControllerManager.isRightPressed() 
 				|| ControllerManager.isLeftPressed() && ControllerManager.isRightPressed()) {
 			velX = 0;
-			if (!isJumping) currentAnimationState = PLAYER_ANIMATION_IDLE; 
-		} else if (ControllerManager.isJumpPressed() && isJumping && isGrounded){
+			if (!isJumping && isGrounded) currentAnimationState = PLAYER_ANIMATION_IDLE; 
+		} else if (ControllerManager.isJumpPressed() && isJumping && isGrounded){	
 				if (velX != 0) currentAnimationState = PLAYER_ANIMATION_WALK;
 		} else {
-			facing = (int) Math.signum(velX);
+			
 			if (!isJumping) currentAnimationState = PLAYER_ANIMATION_WALK;
 		}
 		
+		
+		
 		checkMapCollision();
 		
-		if (isGrounded && jumpc > 0) {		
-			currentJumpSpeed = 0;			
-			velY = 0;
-			jumpc = 0;
-			if (!ControllerManager.isJumpPressed()) isJumping = false;
+		if (isGrounded && isJumping) {				
+			jumpc = -1;
+			if (!ControllerManager.isJumpPressed()) {
+				isJumping = false;
+				jumpc = 0;
+				currentJumpSpeed = 0;
+			}
 		}
 		
 	}

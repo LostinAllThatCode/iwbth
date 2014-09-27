@@ -45,7 +45,7 @@ public class TileMap {
 	public Tile getTile(int x, int y){
 		int j = (y / Constants.GAME_TILESIZE) + offsety;
 		int i = (x / Constants.GAME_TILESIZE) + offsetx;
-		if (i < currentMap.get(0).size() && j < currentMap.size()) return currentMap.get(j).get(i); else return null;
+		if (i < currentMap.get(0).size()-1 && j < currentMap.size()-1) return currentMap.get(j).get(i); else return null;
 	}
 
 	public int getOffsetX() {

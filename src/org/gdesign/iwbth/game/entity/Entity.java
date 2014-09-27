@@ -33,33 +33,31 @@ public class Entity {
 		rect.setLocation(x-rect.getWidth()/2,y-rect.getHeight());
 	}
 	
-	public void checkMapCollision(){	
+	public void checkMapCollision(){
 		Tile t;
 		t = MapManager.getTileConnectedToEntity(this, MapManager.LEFT);
 		if (t != null)
-			if (t.getId() > 0 && t.getId() < 20 && velX < 0){
+			if (t.isSolid() && velX < 0){
 				if (t.intersects(this)) velX = 0;
 			}
 		t = MapManager.getTileConnectedToEntity(this, MapManager.RIGHT);
 		if (t != null)
-			if (t.getId() > 0 && t.getId() < 20 && velX > 0) {
+			if (t.isSolid() && velX > 0) {
 				if (t.intersects(this)) velX = 0;
 			} 
 		t = MapManager.getTileConnectedToEntity(this, MapManager.UP);
 		if (t != null)
-			if (t.getId() > 0 && t.getId() < 20 && velY < 0) {
+			if (t.isSolid() && velY < 0) {
 				if (t.intersects(this)) velY *= -.15f;
 			}
 		t = MapManager.getTileConnectedToEntity(this, MapManager.DOWN);
 		if (t != null)
-			if (t.getId() > 0 && t.getId() < 20 && velY > 0) {
+			if (t.isSolid()) {
 				if (t.intersects(this)){
-					isGrounded = true;
 					velY = t.getY()-this.getY();
+					isGrounded = true;
 				} 
-			} else if (t.getId() == 0){
-					isGrounded = false;
-			}
+			} else isGrounded = false;
 			
 		setLocation((int) (x+velX),(int) (y+velY));
 	}

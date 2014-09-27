@@ -1,5 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="IWBTH" basedir=".">
+	<property name="version" value="1.0.0.1"/>
+	
+    <taskdef name="exe4j"
+             classname="com.exe4j.Exe4JTask"
+             classpath="./exe4j/bin/ant.jar"/>
+    	
     <target name="clean" >
         <delete dir="build"/>
     </target>
@@ -13,10 +19,11 @@
     	<delete file="iwbth.jar" />
         <jar destfile="iwbth.jar" basedir="build/classes">
         	<fileset dir="res" />
-            <manifest>
-            	<attribute name="Class-Path" value="lwjgl.jar lwjgl_util.jar jinput.jar jinput-test.jar jorbis-0.0.17-2.jar slick-util.jar"/>
-                <attribute name="Main-Class" value="org.gdesign.iwbth.game.main.Main"/>
-            </manifest>
         </jar>
+    </target>
+
+    <target name="exe"  depends="jar" description="creates exe from jar file">
+      <exe4j projectfile="iwbth.exe4j" release="${version}" quiet="false"/>
+    	<delete file="iwbth.jar"/>
     </target>
 </project>

@@ -5,40 +5,58 @@ import static org.lwjgl.opengl.GL11.*;
 
 import org.gdesign.iwbth.game.entity.Entity;
 import org.gdesign.iwbth.game.main.Constants;
-import org.gdesign.iwbth.game.main.Game;
 import org.gdesign.iwbth.game.texture.Sprite;
 import org.lwjgl.util.Rectangle;
-import org.newdawn.slick.Color;
 
 public class Tile {
 	
-	private int x,y,tilesize,id;
+	private int x,y,tilesize,id,dX,dY,dir;
 	private Rectangle crect;
 	private Sprite sprite;
-	public boolean highlight=false;
+	private boolean solid,moveable;
 
 	public Tile(int x, int y, int tilesize, Sprite sprite){
 		this.x = x;
 		this.y = y;
+		this.dX = 0;
+		this.dY = 0;
+		this.dir = 1;
 		this.tilesize = tilesize;
 		this.sprite = sprite;
 		this.crect = new Rectangle(x,y,tilesize,tilesize);
-		if (sprite != null) this.id = sprite.getId();
+		if (sprite != null) {
+			this.id = sprite.getId();
+			if (this.id > 0 && this.id <= 20) {
+				solid = true;
+				moveable = false;
+			}
+			if (this.id > 60 && this.id <= 80) {
+				solid = true;
+				moveable = true;
+			}
+		} else {
+			solid = false;
+			moveable = false;
+		}
 	}
 	
 	public void update(){
-		highlight=false;
 	}
 	
 	public void move(long delta) {
-		// TODO Auto-generated method stub
+		if (isMoveable()) {
+			if (dX < -50) dir =  1;
+			if (dX > 50) dir = -1;
+			int speed = (int) (delta * .13f * dir);
+			dX += speed;
+			translate(speed, 0);
+		}
 		
 	}
 	
 	public void draw(){
 		glPushMatrix();
-		if (sprite != null) {
-			
+		if (sprite != null) {		
 			glEnable(GL_TEXTURE_RECTANGLE_ARB);
 	        glBindTexture(GL_TEXTURE_RECTANGLE_ARB, sprite.getTexture());
 	       
@@ -62,17 +80,6 @@ public class Tile {
 
 	        glBindTexture(GL_TEXTURE_RECTANGLE_ARB, 0);
 	        glDisable(GL_TEXTURE_RECTANGLE_ARB);
-		} else {
-			glEnable(GL_COLOR);
-			glColor3f(.7f,.85f,1);
-		    glBegin(GL_QUADS);
-		        glVertex2f(x, y);
-		        glVertex2f(x, y+tilesize);
-		        glVertex2f(x+tilesize, y+tilesize);
-		        glVertex2f(x+tilesize, y);
-	        glEnd();
-	        glColor3f(1,1,1);
-	        glDisable(GL_COLOR);
 		}
 		
 		if (Constants.DEBUG_GRID){
@@ -87,20 +94,27 @@ public class Tile {
 	        glDisable(GL_COLOR);
 		}
 		
-		if (highlight) Game.drawString(x+tilesize/2, y+tilesize/2, "C", Color.red);
-		
 		glPopMatrix();
 	}
 	
 	public void translate(int dx, int dy){
 		this.x += dx;
 		this.y += dy;
+		this.crect.translate(dx, dy);
 	}
 	
 	public boolean intersects(Entity e){
 		if (sprite != null){
 			return (e.intersects(crect));
 		} else return false;
+	}
+	
+	public boolean isSolid(){
+		return solid;
+	}
+	
+	public boolean isMoveable(){
+		return moveable;
 	}
 	
 	public int getX() { return x; }

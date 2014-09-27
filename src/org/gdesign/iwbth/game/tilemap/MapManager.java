@@ -12,10 +12,10 @@ import org.gdesign.iwbth.game.main.Functions;
 import org.gdesign.iwbth.game.texture.TextureManager;
 
 public class MapManager {
-	public static final int UP 	= 0x01;
+	public static final int UP 		= 0x01;
 	public static final int DOWN 	= 0x02;
 	public static final int LEFT 	= 0x03;
-	public static final int RIGHT = 0x04;
+	public static final int RIGHT 	= 0x04;
 	
 	private static boolean initialized = false;
 	
@@ -97,7 +97,6 @@ public class MapManager {
 	}
 	
 	public static void shiftMap(int position){
-		System.out.println(Functions.getTimeStamp()+" [MAPMANAGER] : Shift map operation triggerd > "+position);
 		switch (position) {
 			case UP: 	map.setOffsetY(-15); 	break;
 			case DOWN:	map.setOffsetY(15);		break;
