@@ -9,7 +9,9 @@ import org.gdesign.platformer.components.Physics;
 import org.gdesign.platformer.components.Controller;
 import org.gdesign.platformer.components.Position;
 import org.gdesign.platformer.core.Constants;
+import org.gdesign.platformer.entities.Enemy;
 import org.gdesign.platformer.entities.Player;
+import org.gdesign.platformer.entities.Upgrade;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
@@ -56,7 +58,7 @@ public class SimulationSystem extends EntityProcessingSystem implements ContactL
 	
 	@Override
 	protected void begin() {
-		simulation.step(Gdx.graphics.getDeltaTime(), 6, 3);
+		simulation.step(Gdx.graphics.getDeltaTime(), 8, 3);
 	}
 	
 	@Override
@@ -85,9 +87,7 @@ public class SimulationSystem extends EntityProcessingSystem implements ContactL
 			Fixture a = contact.getFixtureA();
 			Fixture b = contact.getFixtureB();
 			
-			if (a.getBody().getUserData() instanceof Player) beginCollision(a, b);
-			if (b.getBody().getUserData() instanceof Player) beginCollision(b, a);
-
+			beginCollision(a, b);
 		} catch (Exception e) {
 			System.err.println(e);
 		}
@@ -98,8 +98,7 @@ public class SimulationSystem extends EntityProcessingSystem implements ContactL
 			Fixture a = contact.getFixtureA();
 			Fixture b = contact.getFixtureB();
 			
-			if (a.getBody().getUserData() instanceof Player) endCollision(a, b);
-			if (b.getBody().getUserData() instanceof Player) endCollision(b, a);
+			endCollision(a, b);
 		} catch (Exception e) {
 			System.err.println(e);
 		}
@@ -110,48 +109,39 @@ public class SimulationSystem extends EntityProcessingSystem implements ContactL
 		Entity source = (Entity) src.getBody().getUserData();
 		Entity target = (Entity) tar.getBody().getUserData();
 		
-		source.getComponent(Physics.class).setSensorCollision(src.getFilterData().categoryBits,true);
+		if (source instanceof Enemy || source instanceof Upgrade) source.getComponent(Behaviour.class).beginCollision(target);
+		if (target instanceof Enemy || target instanceof Upgrade) target.getComponent(Behaviour.class).beginCollision(source);
 		
-		switch (src.getFilterData().categoryBits) {
-			case Constants.CAT_Player:
-					switch (tar.getFilterData().categoryBits) {
-						case Constants.CAT_World:
-							break;
-						case Constants.CAT_Upgrade:
-							target.getComponent(Behaviour.class).handleCollision(source);
-							break;
-						default:
-							break;
-						}
-				break;
-				
-			default:
-				break;
-			}
+		if (source instanceof Player && tar.getFilterData().categoryBits == Constants.CATEGORY_WORLD) 
+			source.getComponent(Physics.class).setSensorCollision(src.getFilterData().categoryBits, true);
+		if (target instanceof Player && src.getFilterData().categoryBits == Constants.CATEGORY_WORLD) 
+			target.getComponent(Physics.class).setSensorCollision(tar.getFilterData().categoryBits, true);
+		
 	}
 	
 	private void endCollision(Fixture src, Fixture tar) {
 		Entity source = (Entity) src.getBody().getUserData();
 		Entity target = (Entity) tar.getBody().getUserData();
 		
-		source.getComponent(Physics.class).setSensorCollision(src.getFilterData().categoryBits,false);
+		if (source instanceof Enemy || source instanceof Upgrade) source.getComponent(Behaviour.class).beginCollision(target);
+		if (target instanceof Enemy || target instanceof Upgrade) target.getComponent(Behaviour.class).beginCollision(source);
 		
-		switch (src.getFilterData().categoryBits) {
-			case Constants.CAT_Player:
-					switch (tar.getFilterData().categoryBits) {
-						case Constants.CAT_World:
-							break;
-						case Constants.CAT_Upgrade:
-							target.getComponent(Behaviour.class).handleCollision(source);
-							break;
-						default:
-							break;
-						}
-				break;
-				
-			default:
-				break;
-			}
+		if (source instanceof Player && tar.getFilterData().categoryBits == Constants.CATEGORY_WORLD) 
+			source.getComponent(Physics.class).setSensorCollision(src.getFilterData().categoryBits, false);
+		if (target instanceof Player && src.getFilterData().categoryBits == Constants.CATEGORY_WORLD) 
+			target.getComponent(Physics.class).setSensorCollision(tar.getFilterData().categoryBits, false);
+		
+		/*
+		if (source instanceof Player) {
+			if (target instanceof Enemy || target instanceof Upgrade) target.getComponent(Behaviour.class).beginCollision(source);
+			if (tar.getFilterData().categoryBits == Constants.CATEGORY_WORLD) 
+				source.getComponent(Physics.class).setSensorCollision(src.getFilterData().categoryBits, false);
+		} else if (source instanceof Enemy || source instanceof Upgrade) {
+			if (target instanceof Player) source.getComponent(Behaviour.class).beginCollision(target);
+		} else if (src.getFilterData().categoryBits == Constants.CATEGORY_WORLD) {
+			if (target instanceof Player) target.getComponent(Physics.class).setSensorCollision(tar.getFilterData().categoryBits, false);
+		}
+		*/
 	}
 	
 	@Override

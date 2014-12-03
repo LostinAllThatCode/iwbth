@@ -49,7 +49,7 @@ public class AnimationRenderSystem extends EntityProcessingSystem {
 			frame = animatable.getRegion(); 
 			
 			batch.begin();
-			batch.draw(frame,x - frame.getRegionWidth()/2 ,y - physics.h/2);
+			batch.draw(frame,x - frame.getRegionWidth()/2 ,y - physics.getBodyHeight()/2);
 			batch.end();
 			animatable.frame = null;
 		} catch (Exception e) {

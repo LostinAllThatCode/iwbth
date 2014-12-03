@@ -1,33 +1,14 @@
-------------------------------------------------------------------------------------------
--- #####################################################################################--
--- PlayerController component script for org.gdesign.game engine
--- Documentation link : http://www.whatever.com
---
--- GLOBAL VARS AND FUNCTIONS | !DO NOT CHANGE!
-	self = nil
-	
-	function init(e)
-		self = e
-		if self == nil then error("FATAL ERROR.") end
-	end
-	
-	function getClazz(sName)
-		clazz = luajava.bindClass("org.gdesign.platformer.components."..sName)
-		return clazz
-	end
--- #####################################################################################--
-
 delta = 0
 
 radius = 1
 originX = 0
 originY = 0
 angle = 0
-speed = .1f
+speed = .1
 started = false
 
 function doBehaviour()
-	physics = self:getComponent(getClazz("Physics"))
+	physics = _self:getComponent(component("Physics"))
 	
 	if not started then 
 		originX = physics.body:getPosition().x
@@ -48,18 +29,17 @@ function doBehaviour()
 end
 
 
-function handleCollision(target)
-	self:destroy()
+function beginCollision(target)
+	_self:destroy()
 	
-	phy = target:getComponent(getClazz("Physics"))
-	pos = target:getComponent(getClazz("Position"))
-	
-	target:removeComponent(getClazz("Animatable"))
-	newAnim = luajava.newInstance("org.gdesign.platformer.components.Animatable","textures/entity/player/mario.png")
+	target:removeComponent(component("Animatable"))
+	newAnim = luajava.new(component("Animatable"),"textures/entity/player/mario.png")
 	target:addComponent(newAnim)
 	
-	control = target:getComponent(getClazz("Controller"))
-	control:setLuaScript("scripts/control/mario.lua",target)
-	
+	control = target:getComponent(component("Controller"))
+	control:setScript("scripts/control/mario.lua")
+end
 
+function endCollision(target)
+	--_self:destroy()
 end

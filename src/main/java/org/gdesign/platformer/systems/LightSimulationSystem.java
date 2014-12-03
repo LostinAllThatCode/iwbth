@@ -35,7 +35,7 @@ public class LightSimulationSystem extends SingleProcessSystem {
 	
 	public void setUp(){
 		Filter f = new Filter();
-		f.categoryBits = Constants.CAT_Light;
+		f.categoryBits = Constants.CATEGORY_LIGHT;
 		f.maskBits = -1;
 		f.groupIndex = 1;
 		

@@ -16,8 +16,12 @@ public class Behaviour extends Scriptable {
 		call("doBehaviour");
 	}
 	
-	public void handleCollision(Entity target){
-		call("handleCollision",CoerceJavaToLua.coerce(target));
+	public void beginCollision(Entity target){
+		call("beginCollision",CoerceJavaToLua.coerce(target));
+	}
+	
+	public void endCollision(Entity target){
+		call("endCollision",CoerceJavaToLua.coerce(target));
 	}
 
 }

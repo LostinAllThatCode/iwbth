@@ -2,10 +2,11 @@ package org.gdesign.platformer;
 
 import org.gdesign.games.ecs.Entity;
 import org.gdesign.games.ecs.World;
+import org.gdesign.platformer.components.Controller;
 import org.gdesign.platformer.components.Physics;
 import org.gdesign.platformer.components.Position;
-import org.gdesign.platformer.components.Physics.PhysicType;
 import org.gdesign.platformer.core.Constants;
+import org.gdesign.platformer.entities.Enemy;
 import org.gdesign.platformer.entities.Player;
 import org.gdesign.platformer.entities.Upgrade;
 import org.gdesign.platformer.managers.PlayerManager;
@@ -36,6 +37,7 @@ public class PlatformerTest implements ApplicationListener, InputProcessor {
         cfg.useGL30 = false;
         cfg.width = 1024;
         cfg.height = 768;
+        cfg.x = 2000;
         cfg.resizable = false;
         cfg.vSyncEnabled = false;
         new LwjglApplication(new PlatformerTest(), cfg);	
@@ -52,27 +54,28 @@ public class PlatformerTest implements ApplicationListener, InputProcessor {
 		world.setSystem(new SimulationSystem(0, -16.8f));
 		world.setSystem(new TextureRenderSystem());
 		world.setSystem(new AnimationRenderSystem());
-		world.setSystem(new LightSimulationSystem());
+		//world.setSystem(new LightSimulationSystem());
 		world.setSystem(new DebugInfoSystem());		
 		
 		Entity floor = world.createEntity();
 		floor.addComponent(new Position())
-		.addComponent(new Physics(world,0, 0, 8000, 2,PhysicType.WORLD).setUserdata(floor))
+		.addComponent(new Physics(world,0, 0, 8000, 2,Constants.CATEGORY_WORLD).setUserdata(floor))
 		.addToWorld();
 		
 		Entity wallLeft = world.createEntity();
 		wallLeft.addComponent(new Position())
-		.addComponent(new Physics(world,0, 0, 2, 1200,PhysicType.WORLD).setUserdata(wallLeft))
+		.addComponent(new Physics(world,0, 0, 2, 1200,Constants.CATEGORY_WORLD).setUserdata(wallLeft))
 		.addToWorld();
 
 		Entity wallRight = world.createEntity();
 		wallRight.addComponent(new Position())
-		.addComponent(new Physics(world,1200, 0, 2, 1200,PhysicType.WORLD).setUserdata(wallRight))
+		.addComponent(new Physics(world,1200, 0, 2, 1200,Constants.CATEGORY_WORLD).setUserdata(wallRight))
 		.addToWorld();
 		
-		world.getManager(PlayerManager.class).setPlayer(new Player(world, 100, 0));
+		world.getManager(PlayerManager.class).setPlayer(new Player(world, 100, 25));
 		
 		new Upgrade(world, 100, 120);
+		new Enemy(world, 500, 0, "scripts/behaviour/enemy.default.lua", "textures/entity/player/player.png");
 
 	}
  
@@ -111,6 +114,11 @@ public class PlatformerTest implements ApplicationListener, InputProcessor {
 
 	public boolean keyTyped(char character) {
 		if (character == 'd') BOX2D_WORLD_DEBUG = (BOX2D_WORLD_DEBUG ? false : true);
+		if (character == 'r') {
+			for (Entity e : world.getEntityManager().getAllEntitiesWithComponents(Controller.class)){
+				e.getComponent(Controller.class).reload();
+			}
+		}
 		return false;
 	}
 
