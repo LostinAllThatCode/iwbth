@@ -53,8 +53,8 @@ public class Box2dBodyFactory {
 		FixtureDef fixtureDef = new FixtureDef();
 	    fixtureDef.shape = shape;
 	    fixtureDef.density = .82f;
-	    fixtureDef.filter.categoryBits = Constants.CATEGORY_UPGRADE;
-	    fixtureDef.filter.maskBits = Constants.MASK_UPGRADE;
+	    fixtureDef.filter.categoryBits = Constants.CAT_Upgrade;
+	    fixtureDef.filter.maskBits = Constants.MASK_Upgrade;
 	    
 		b.createFixture(fixtureDef);		
 		return b;
@@ -78,8 +78,8 @@ public class Box2dBodyFactory {
 	    fixtureDef.density = .82f;
 	    fixtureDef.friction = 0f;
 	    fixtureDef.restitution = 0f;
-	    fixtureDef.filter.categoryBits = Constants.CATEGORY_PLAYER;
-	    fixtureDef.filter.maskBits = Constants.MASK_PLAYER;
+	    fixtureDef.filter.categoryBits = Constants.CAT_Player;
+	    fixtureDef.filter.maskBits = Constants.MASK_Player;
 	    
 		b.createFixture(fixtureDef);		
 		return b;
@@ -100,8 +100,8 @@ public class Box2dBodyFactory {
 	    fixtureDef.shape = shape;	
 	    fixtureDef.density = 2f;
 	    fixtureDef.friction = 1f;
-	    fixtureDef.filter.categoryBits = Constants.CATEGORY_WORLD;
-	    fixtureDef.filter.maskBits = Constants.MASK_WORLD;
+	    fixtureDef.filter.categoryBits = Constants.CAT_World;
+	    fixtureDef.filter.maskBits = Constants.MASK_World;
 	    
 		b.createFixture(fixtureDef);
 		
@@ -166,40 +166,40 @@ public class Box2dBodyFactory {
 	    fixtureDef.density = .82f;
 	    fixtureDef.friction = 0f;
 	    fixtureDef.restitution = 0f;
-	    fixtureDef.filter.categoryBits = Constants.CATEGORY_PLAYER;
-	    fixtureDef.filter.maskBits = Constants.MASK_PLAYER;	  
+	    fixtureDef.filter.categoryBits = Constants.CAT_Player;
+	    fixtureDef.filter.maskBits = Constants.MASK_Player;	  
 	    b.createFixture(fixtureDef);
 	    
 	    shape.setAsBox(w*Constants.WORLD_TO_BOX/3,h*Constants.WORLD_TO_BOX/20,new Vector2(0,-h*Constants.WORLD_TO_BOX/2),0);	    
 	    FixtureDef sensorfixtureDef = new FixtureDef();
 	    sensorfixtureDef.shape = shape;
 	    sensorfixtureDef.isSensor = true;
-	    sensorfixtureDef.filter.categoryBits = Constants.CATEGORY_PLAYER_FOOT;
-	    sensorfixtureDef.filter.maskBits = Constants.MASK_PLAYER;
+	    sensorfixtureDef.filter.categoryBits = Constants.CAT_PlayerFeet;
+	    sensorfixtureDef.filter.maskBits = Constants.MASK_Player;
 	    b.createFixture(sensorfixtureDef);
 	 
 	    shape.setAsBox(w*Constants.WORLD_TO_BOX/3,h*Constants.WORLD_TO_BOX/20,new Vector2(0,h*Constants.WORLD_TO_BOX/2),0);	    
 	    sensorfixtureDef = new FixtureDef();
 	    sensorfixtureDef.shape = shape;
 	    sensorfixtureDef.isSensor = true;
-	    sensorfixtureDef.filter.categoryBits = Constants.CATEGORY_PLAYER_HEAD;
-	    sensorfixtureDef.filter.maskBits = Constants.MASK_PLAYER;
+	    sensorfixtureDef.filter.categoryBits = Constants.CAT_PlayerHead;
+	    sensorfixtureDef.filter.maskBits = Constants.MASK_Player;
 	    b.createFixture(sensorfixtureDef);
 	    
 	    shape.setAsBox(w*Constants.WORLD_TO_BOX/8,h*Constants.WORLD_TO_BOX/3,new Vector2(-w*Constants.WORLD_TO_BOX/2,0),0);	    
 	    sensorfixtureDef = new FixtureDef();
 	    sensorfixtureDef.shape = shape;
 	    sensorfixtureDef.isSensor = true;
-	    sensorfixtureDef.filter.categoryBits = Constants.CATEGORY_PLAYER_LEFT;
-	    sensorfixtureDef.filter.maskBits = Constants.MASK_PLAYER;
+	    sensorfixtureDef.filter.categoryBits = Constants.CAT_PlayerLeft;
+	    sensorfixtureDef.filter.maskBits = Constants.MASK_Player;
 	    b.createFixture(sensorfixtureDef);
 	    
 	    shape.setAsBox(w*Constants.WORLD_TO_BOX/8,h*Constants.WORLD_TO_BOX/3,new Vector2(w*Constants.WORLD_TO_BOX/2,0),0);		    
 	    sensorfixtureDef = new FixtureDef();
 	    sensorfixtureDef.shape = shape;
 	    sensorfixtureDef.isSensor = true;
-	    sensorfixtureDef.filter.categoryBits = Constants.CATEGORY_PLAYER_RIGHT;
-	    sensorfixtureDef.filter.maskBits = Constants.MASK_PLAYER;
+	    sensorfixtureDef.filter.categoryBits = Constants.CAT_PlayerRight;
+	    sensorfixtureDef.filter.maskBits = Constants.MASK_Player;
 	    b.createFixture(sensorfixtureDef);
 	    
 		return b;

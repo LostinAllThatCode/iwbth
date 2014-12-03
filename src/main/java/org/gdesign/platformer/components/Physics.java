@@ -53,16 +53,16 @@ public class Physics extends BaseComponent{
 	public void setSensorCollision(int category, boolean collision){
 		if (ptype == PhysicType.PLAYER){
 			switch (category) {
-				case Constants.CATEGORY_PLAYER_FOOT:
+				case Constants.CAT_PlayerFeet:
 					_feet = collision;
 					break;
-				case Constants.CATEGORY_PLAYER_HEAD:
+				case Constants.CAT_PlayerHead:
 					_head = collision;
 					break;
-				case Constants.CATEGORY_PLAYER_LEFT:
+				case Constants.CAT_PlayerLeft:
 					_left = collision;
 					break;
-				case Constants.CATEGORY_PLAYER_RIGHT:
+				case Constants.CAT_PlayerRight:
 					_right = collision;
 					break;
 				default:

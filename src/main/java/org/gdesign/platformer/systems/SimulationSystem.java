@@ -113,11 +113,11 @@ public class SimulationSystem extends EntityProcessingSystem implements ContactL
 		source.getComponent(Physics.class).setSensorCollision(src.getFilterData().categoryBits,true);
 		
 		switch (src.getFilterData().categoryBits) {
-			case Constants.CATEGORY_PLAYER:
+			case Constants.CAT_Player:
 					switch (tar.getFilterData().categoryBits) {
-						case Constants.CATEGORY_WORLD:
+						case Constants.CAT_World:
 							break;
-						case Constants.CATEGORY_UPGRADE:
+						case Constants.CAT_Upgrade:
 							target.getComponent(Behaviour.class).handleCollision(source);
 							break;
 						default:
@@ -137,11 +137,11 @@ public class SimulationSystem extends EntityProcessingSystem implements ContactL
 		source.getComponent(Physics.class).setSensorCollision(src.getFilterData().categoryBits,false);
 		
 		switch (src.getFilterData().categoryBits) {
-			case Constants.CATEGORY_PLAYER:
+			case Constants.CAT_Player:
 					switch (tar.getFilterData().categoryBits) {
-						case Constants.CATEGORY_WORLD:
+						case Constants.CAT_World:
 							break;
-						case Constants.CATEGORY_UPGRADE:
+						case Constants.CAT_Upgrade:
 							target.getComponent(Behaviour.class).handleCollision(source);
 							break;
 						default:
