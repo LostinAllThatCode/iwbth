@@ -1,0 +1,34 @@
+{
+  "animations" : [
+    {
+     "name"    : "IDLE",
+     "speed"   : 1,
+     "originX" : 197,
+     "originY" : 66,
+     "width"   : 39, 
+     "height"  : 39,
+     "frames"  : 1,
+     "loop"    : false
+     },   
+     {
+     "name"    : "JUMPING",
+     "speed"   : 1,
+     "originX" : 197,
+     "originY" : 107,
+     "width"   : 39, 
+     "height"  : 39,
+     "frames"  : 1,
+     "loop"    : false
+     }, 
+     {
+     "name"    : "RUNNING",
+     "speed"   : 0.075,
+     "originX" : 197,
+     "originY" : 146,
+     "width"   : 39, 
+     "height"  : 39,
+     "frames"  : 3,
+     "loop"    : true
+     },  
+ ]
+}
