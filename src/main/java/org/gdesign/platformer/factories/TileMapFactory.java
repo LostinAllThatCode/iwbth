@@ -1,4 +1,4 @@
-package org.gdesign.platformer;
+package org.gdesign.platformer.factories;
 
 public class TileMapFactory {
 	

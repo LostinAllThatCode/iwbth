@@ -1,4 +1,4 @@
--- Variables needed for doControls
+-- Variables needed for do
 dVelY 		= 0
 jumpCount	= 0
 
@@ -7,19 +7,19 @@ airdrag 	= .69
 maxJumps 	= 2
 maxVelY		= 8
 
-function doControls()
-
+function doBehaviour()
 	physics 	= _self:getComponent(component("Physics"))
-	controls 	= _self:getComponent(component("Controller")) 
 	anim		= _self:getComponent(component("Animatable"))
 	
 	vecVel = physics.body:getLinearVelocity()
 	
-	if physics._feet then 
+	if physics.SENSOR_FEET then 
 		jumpCount = 0
+	else
+		print(jumpCount)
 	end
 	
-	if physics._feet and (controls:isKeyDown(_input.KEY_JUMP) or controls:isButtonPressed(_input.CTRL_A)) then 
+	if physics.SENSOR_FEET and isKeyDown(INPUT.KEY_JUMP) then 
 		if dVelY == 0 then 
 			dVelY = 4
 		else
@@ -31,17 +31,15 @@ function doControls()
 		end
 	end
 	
-	if physics._feet and not (controls:isKeyDown(_input.KEY_JUMP) or controls:isButtonPressed(_input.CTRL_A)) and dVelY > 0 and jumpCount == 0 then 
+	if physics.SENSOR_FEET and not isKeyDown(INPUT.KEY_JUMP) and dVelY > 0 and jumpCount == 0 then 
 		vecVel.y = dVelY
-		--print(dVelY)
 		dVelY = 0
 		jumpCount=jumpCount+1
 		anim:setCurrentAnimation("JUMPING",true)
-		physics._feet = false
-		
+		--physics.SENSOR_FEET = false
 	end	
 	
-	if not physics._feet and (controls:isKeyDown(_input.KEY_JUMP) or controls:isButtonPressed(_input.CTRL_A)) and jumpCount > 0 and jumpCount < maxJumps then
+	if not physics.SENSOR_FEET and isKeyDown(INPUT.KEY_JUMP) and jumpCount > 0 and jumpCount < maxJumps then
 		if dVelY == 0 then 
 			dVelY = 4
 		else
@@ -52,28 +50,28 @@ function doControls()
 		end
 	end
 	
-	if not physics._feet and not (controls:isKeyDown(_input.KEY_JUMP) or controls:isButtonPressed(_input.CTRL_A)) and dVelY > 0 and jumpCount > 0 and jumpCount < maxJumps then
+	if not physics.SENSOR_FEET and not isKeyDown(INPUT.KEY_JUMP) and dVelY > 0 and jumpCount > 0 and jumpCount < maxJumps then
 		vecVel.y  = dVelY
 		dVelY = 0
 		jumpCount = jumpCount+1
 		anim:setCurrentAnimation("JUMPING",true)
-		physics._feet = false
+		--physics.SENSOR_FEET = false
 	end
 	
-	if (controls:isKeyDown(21) or controls:isPoVDown("west")) and not (controls:isKeyDown(22) or controls:isPoVDown("east")) then 
+	if isKeyDown(INPUT.KEY_LEFT) and not isKeyDown(INPUT.KEY_RIGHT) then 
 		vecVel.x = -5
 	end
 		
-	if (controls:isKeyDown(22) or controls:isPoVDown("east")) and not (controls:isKeyDown(21) or controls:isPoVDown("west")) then 
+	if isKeyDown(INPUT.KEY_RIGHT) and not isKeyDown(INPUT.KEY_LEFT) then 
 		vecVel.x = 5
 
 	end
 
-	if not (controls:isKeyDown(21) or controls:isPoVDown("west")) and not (controls:isKeyDown(22) or controls:isPoVDown("east")) then 
+	if not isKeyDown(INPUT.KEY_LEFT) and not isKeyDown(INPUT.KEY_RIGHT) then 
 		vecVel.x = 0
 	end
 		
-	if not physics._feet then 
+	if not physics.SENSOR_FEET then 
 		vecVel.x = vecVel.x * airdrag
 		if vecVel.x < 0 then 
 			anim:setCurrentAnimation("JUMPING",false,true,false) 
@@ -91,4 +89,12 @@ function doControls()
 	end
 
 	physics.body:setLinearVelocity(vecVel)
+end
+
+function beginCollision(target)
+	print("begin" .. target)
+end
+
+function endCollision(target)
+	print("end" .. target)
 end

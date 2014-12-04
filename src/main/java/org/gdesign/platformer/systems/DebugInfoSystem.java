@@ -8,8 +8,8 @@ import org.gdesign.games.ecs.systems.EntityProcessingSystem;
 import org.gdesign.games.ecs.systems.IntervalEntitySystem;
 import org.gdesign.games.ecs.systems.SingleProcessSystem;
 import org.gdesign.platformer.components.Animatable;
+import org.gdesign.platformer.components.Behaviour;
 import org.gdesign.platformer.components.Physics;
-import org.gdesign.platformer.components.Controller;
 import org.gdesign.platformer.components.Position;
 import org.gdesign.platformer.core.Constants;
 import org.gdesign.platformer.managers.PlayerManager;
@@ -74,13 +74,11 @@ public class DebugInfoSystem extends SingleProcessSystem {
 	private String getPlayerInfo(){
 		String text="[PLAYER]    ";
 		Position position = world.getManager(PlayerManager.class).getPlayer().getComponent(Position.class);
-		Physics physics = world.getManager(PlayerManager.class).getPlayer().getComponent(Physics.class);
 		Animatable anim = world.getManager(PlayerManager.class).getPlayer().getComponent(Animatable.class);
 		text += " X: " + (int) (position.x * Constants.BOX_TO_WORLD) + "("+df.format(position.x)+"m) "
-				+"Y: " + (int)  (position.y * Constants.BOX_TO_WORLD) + "("+ df.format(position.y) +"m) "
-				+"vX: "+ df.format(physics.body.getLinearVelocity().x);
+				+"Y: " + (int)  (position.y * Constants.BOX_TO_WORLD) + "("+ df.format(position.y) +"m)";
 		text += " ANIM: " + anim.getCurrentAnimation() + "("+ anim.getRegion() .isFlipX()+ "|"+ anim.getRegion() .isFlipY() + ") T: "+df.format(anim.stateTime);
-		text += " CTRL: " + world.getManager(PlayerManager.class).getPlayer().getComponent(Controller.class);
+		text += " BEHAV: " + world.getManager(PlayerManager.class).getPlayer().getComponent(Behaviour.class);
 		return text.toUpperCase();
 	}
 	

@@ -32,12 +32,17 @@ end
 function beginCollision(target)
 	_self:destroy()
 	
+	pos = target:getComponent(component("Position"))
+	
 	target:removeComponent(component("Animatable"))
 	newAnim = luajava.new(component("Animatable"),"textures/entity/player/mario.png")
 	target:addComponent(newAnim)
 	
-	control = target:getComponent(component("Controller"))
-	control:setScript("scripts/control/mario.lua")
+	--target:addComponent(newPhy)
+	
+	behav = target:getComponent(component("Behaviour"))
+	behav:setScript("scripts/control/mario.lua")
+	
 end
 
 function endCollision(target)

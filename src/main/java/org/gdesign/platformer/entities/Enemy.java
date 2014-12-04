@@ -14,7 +14,7 @@ public class Enemy extends Entity {
 		super(world);
 		this.addComponent(new Position(x,y));
 		this.addComponent(new Behaviour(behaviour,this));
-		this.addComponent(new Physics(world,x,y,12,52,Constants.CATEGORY_ENEMY).setUserdata(this));
+		this.addComponent(new Physics(world,x,y,12,52,Constants.CATEGORY_ENEMY, Constants.MASK_ENEMY,this));
 		this.addComponent(new Animatable(texture));
 		this.addToWorld();
 	}

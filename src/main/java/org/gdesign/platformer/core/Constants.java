@@ -15,8 +15,10 @@ public class Constants {
 	public static final int CATEGORY_ENEMY 			= 0x0010;
 	public static final int CATEGORY_UPGRADE		= 0x0020;
 	public static final int CATEGORY_LIGHT			= 0x0040;
-
-	public static final int CATEGORY_WORLD			= 0x0100;
+	
+	public static final int CATEGORY_WORLD_FLOOR	= 0x0100;
+	public static final int CATEGORY_WORLD_WALL		= 0x0200;
+	public static final int CATEGORY_WORLD			= 0x0300;
 
 	public static final int MASK_WORLD 				= -1;
 	public static final int MASK_PLAYER 			= CATEGORY_WORLD | CATEGORY_UPGRADE | CATEGORY_ENEMY;	

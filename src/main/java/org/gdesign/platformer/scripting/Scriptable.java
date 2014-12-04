@@ -1,9 +1,13 @@
 package org.gdesign.platformer.scripting;
 
+import java.awt.im.InputContext;
+import java.util.concurrent.CopyOnWriteArrayList;
+
 import org.gdesign.games.ecs.BaseComponent;
 import org.gdesign.games.ecs.Entity;
 import org.gdesign.platformer.core.Constants;
-import org.gdesign.platformer.core.InputControls;
+import org.gdesign.platformer.core.InputSettings;
+import org.gdesign.platformer.core.InputSettings.InputType;
 import org.luaj.vm2.Globals;
 import org.luaj.vm2.LuaValue;
 import org.luaj.vm2.Varargs;
@@ -12,6 +16,8 @@ import org.luaj.vm2.lib.jse.CoerceJavaToLua;
 import org.luaj.vm2.lib.jse.JsePlatform;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.controllers.Controllers;
+import com.badlogic.gdx.controllers.PovDirection;
 
 public abstract class Scriptable extends BaseComponent{
 	private boolean initialized=false;
@@ -41,11 +47,11 @@ public abstract class Scriptable extends BaseComponent{
 	
 	protected Scriptable init(String script){
 		_G.loadfile(script).call();
-		_G.set("_input", CoerceJavaToLua.coerce(InputControls.class));
-		_G.set("_const", CoerceJavaToLua.coerce(Constants.class));
+		_G.set("INPUT", CoerceJavaToLua.coerce(InputSettings.class));
+		_G.set("CONST", CoerceJavaToLua.coerce(Constants.class));
+		_G.set("GDX", CoerceJavaToLua.coerce(Gdx.class));
 		_G.set("_self", CoerceJavaToLua.coerce(entity));
 		_G.set("_world", CoerceJavaToLua.coerce(entity.getWorld()));
-		_G.set("_gdx", CoerceJavaToLua.coerce(Gdx.class));
 		_G.set("component",new OneArgFunction() {
 			@Override
 			public LuaValue call(LuaValue arg0) {
@@ -77,6 +83,24 @@ public abstract class Scriptable extends BaseComponent{
 					e.printStackTrace();
 					return null;
 				}
+			}
+		});
+		_G.set("isKeyDown",new OneArgFunction() {		
+			@Override
+			public LuaValue call(LuaValue arg0) {
+				int keycode = arg0.toint();
+				boolean retVal = false;
+				if (InputSettings.inputType == InputType.KEYBOARD){
+					if (Gdx.input.isKeyPressed(keycode)) retVal = true;
+				} else if (InputSettings.inputType == InputType.CONTROLLER){
+					if (Controllers.getControllers().size == 0) System.err.println("No controller with id " + InputSettings.CTRL_ID +" active");
+					else if (keycode == InputSettings.KEY_UP) retVal = Controllers.getControllers().get(InputSettings.CTRL_ID).getPov(InputSettings.CTRL_POV).equals(PovDirection.north);
+					else if (keycode == InputSettings.KEY_LEFT) retVal = Controllers.getControllers().get(InputSettings.CTRL_ID).getPov(InputSettings.CTRL_POV).equals(PovDirection.west);
+					else if (keycode == InputSettings.KEY_RIGHT) retVal = Controllers.getControllers().get(InputSettings.CTRL_ID).getPov(InputSettings.CTRL_POV).equals(PovDirection.east);
+					else if (keycode == InputSettings.KEY_DOWN) retVal = Controllers.getControllers().get(InputSettings.CTRL_ID).getPov(InputSettings.CTRL_POV).equals(PovDirection.south);
+					else if (Controllers.getControllers().get(InputSettings.CTRL_ID).getButton(keycode)) retVal = true;
+				}
+				return LuaValue.valueOf(retVal);
 			}
 		});
 		initialized = true;
