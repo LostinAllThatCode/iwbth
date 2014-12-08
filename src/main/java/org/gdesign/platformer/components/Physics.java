@@ -16,32 +16,31 @@ public class Physics extends BaseComponent{
 	public Body body;
 	private int w,h,cat;
 	
-	public Physics(World world, int x, int y, int width, int height, int category, int mask, Entity parent){
+	public Physics(World world, int x, int y, int width, int height, BodyType type, int category, int mask, Entity parent){
 		switch (category) {
 			case Constants.CATEGORY_PLAYER:
-				body = Box2dBodyFactory.createBody(BodyType.DynamicBody, x, y, true);
+				body = Box2dBodyFactory.createBody(type, x, y, true);
 				Box2dBodyFactory.addPlayerFixtureAndSensors(body, width, height, category, mask);
 				break;
 			case Constants.CATEGORY_ENEMY:
-				body = Box2dBodyFactory.createBody(BodyType.DynamicBody, x, y, true);
-				Box2dBodyFactory.addDefaultFixture(body, width, height, category, mask, 1);
-				break;
-			case Constants.CATEGORY_UPGRADE:
-				body = Box2dBodyFactory.createBody(BodyType.KinematicBody, x, y, true);
+				body = Box2dBodyFactory.createBody(type, x, y, true);
 				Box2dBodyFactory.addDefaultFixture(body, width, height, category, mask, 0);
 				break;
-			case Constants.CATEGORY_WORLD_FLOOR:
-				body = Box2dBodyFactory.createBody(BodyType.StaticBody, x, y, true);
-				Box2dBodyFactory.addDefaultFixture(body, width, height, category, mask,1);
+			case Constants.CATEGORY_UPGRADE:
+				body = Box2dBodyFactory.createBody(type, x, y, true);
+				Box2dBodyFactory.addDefaultFixture(body, width, height, category, mask, 0);
 				break;
-			case Constants.CATEGORY_WORLD_WALL:
-				body = Box2dBodyFactory.createBody(BodyType.StaticBody, x, y, true);
-				Box2dBodyFactory.addDefaultFixture(body, width, height, category, mask,0);
+			case Constants.CATEGORY_OBJECT:
+				body = Box2dBodyFactory.createBody(type, x, y, true);
+				Box2dBodyFactory.addDefaultFixture(body, width, height, category, mask, 100);
+				break;
+			case Constants.CATEGORY_WORLD:
+				body = Box2dBodyFactory.createBody(type, x, y, true);
+				Box2dBodyFactory.addDefaultFixture(body, width, height, category, mask,10f);
 				break;
 			default:
 				break;
 		}
-		
 		cat = category;
 		
 		w = width;
@@ -49,15 +48,10 @@ public class Physics extends BaseComponent{
 		body.setUserData(parent);
 	}
 	
-	public Physics setUserdata(Object o){
-		this.body.setUserData(o);
-		return this;
-	}
-	
 	public void setSensorCollision(int category, boolean collision){
-		if (category == Constants.CATEGORY_PLAYER) return;
 		switch (category) {
 			case Constants.CATEGORY_PLAYER_FEET:
+				
 				SENSOR_FEET = collision;
 				break;
 			case Constants.CATEGORY_PLAYER_HEAD:

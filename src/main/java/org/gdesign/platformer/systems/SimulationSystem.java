@@ -10,6 +10,7 @@ import org.gdesign.platformer.components.Position;
 import org.gdesign.platformer.core.Constants;
 import org.gdesign.platformer.entities.Enemy;
 import org.gdesign.platformer.entities.Player;
+import org.gdesign.platformer.entities.Slider;
 import org.gdesign.platformer.entities.Upgrade;
 import org.gdesign.platformer.factories.Box2dBodyFactory;
 
@@ -18,11 +19,15 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.Contact;
 import com.badlogic.gdx.physics.box2d.ContactImpulse;
+import com.badlogic.gdx.physics.box2d.ContactListener;
 import com.badlogic.gdx.physics.box2d.Fixture;
+import com.badlogic.gdx.physics.box2d.JointDef;
+import com.badlogic.gdx.physics.box2d.JointDef.JointType;
 import com.badlogic.gdx.physics.box2d.Manifold;
 import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.physics.box2d.joints.DistanceJointDef;
 
-public class SimulationSystem extends EntityProcessingSystem {
+public class SimulationSystem extends EntityProcessingSystem implements ContactListener {
 	private Physics physics;
 	private Position position;
 	
@@ -51,7 +56,7 @@ public class SimulationSystem extends EntityProcessingSystem {
 	public void initialize() {
 		simulation = new World(gravity, true);
 		simulation.setAutoClearForces(false);
-
+		simulation.setContactListener(this);
         Box2dBodyFactory.initialize(simulation);
 	}
 	
@@ -59,13 +64,8 @@ public class SimulationSystem extends EntityProcessingSystem {
 	@Override
 	protected void begin() {
 		simulation.step(Gdx.graphics.getDeltaTime(), 8, 3);
-		if (simulation.getContactCount() != 0 ){
-			for (Contact con : simulation.getContactList()) {
-				if (con.isTouching()) beginCollision(con.getFixtureA(), con.getFixtureB());
-				else endCollision(con.getFixtureA(), con.getFixtureB());
-			}
-		}
 	}
+	
 	
 	@Override
 	protected void process(Entity entity) {
@@ -79,7 +79,6 @@ public class SimulationSystem extends EntityProcessingSystem {
 			
 			position.setPosition(physics.body.getPosition().x,physics.body.getPosition().y);
 			position.setRotation(physics.body.getAngle());
-			
 		} catch (Exception e) {
 			System.err.println(e + entity.toString());
 		}
@@ -87,42 +86,69 @@ public class SimulationSystem extends EntityProcessingSystem {
 	
 	@Override
 	protected void end() {
-
+	
 	}
 	
 	private void beginCollision(Fixture src, Fixture tar) {
 		Entity source = (Entity) src.getBody().getUserData();
 		Entity target = (Entity) tar.getBody().getUserData();
-		
-		if (source instanceof Enemy || source instanceof Upgrade) source.getComponent(Behaviour.class).beginCollision(target);
-		else if (target instanceof Enemy || target instanceof Upgrade) target.getComponent(Behaviour.class).beginCollision(source);
-		else if (source instanceof Player && tar.getFilterData().categoryBits == Constants.CATEGORY_WORLD_FLOOR){
-			source.getComponent(Physics.class).setSensorCollision(src.getFilterData().categoryBits, true);
-		} 
-		else if (target instanceof Player && src.getFilterData().categoryBits == Constants.CATEGORY_WORLD_FLOOR) {
-			target.getComponent(Physics.class).setSensorCollision(tar.getFilterData().categoryBits, true);
+
+		if (src.getFilterData().categoryBits == Constants.CATEGORY_PLAYER_FEET) {
+			source.getComponent(Physics.class).setSensorCollision(Constants.CATEGORY_PLAYER_FEET, true);
 		}
-			
+		if (tar.getFilterData().categoryBits == Constants.CATEGORY_PLAYER_FEET) {
+			target.getComponent(Physics.class).setSensorCollision(Constants.CATEGORY_PLAYER_FEET, true);
+		}
 		
+		if (source instanceof Enemy || source instanceof Upgrade || source instanceof Slider) source.getComponent(Behaviour.class).beginCollision(target);
+		else if (target instanceof Enemy || target instanceof Upgrade || target instanceof Slider) target.getComponent(Behaviour.class).beginCollision(source);
+	
 	}
 	
 	private void endCollision(Fixture src, Fixture tar) {
 		Entity source = (Entity) src.getBody().getUserData();
 		Entity target = (Entity) tar.getBody().getUserData();
 		
-		if (source instanceof Enemy || source instanceof Upgrade) source.getComponent(Behaviour.class).beginCollision(target);
-		if (target instanceof Enemy || target instanceof Upgrade) target.getComponent(Behaviour.class).beginCollision(source);
+		if (src.isSensor() || tar.isSensor()){
+			if (src.getFilterData().categoryBits == Constants.CATEGORY_PLAYER_FEET) {
+				source.getComponent(Physics.class).setSensorCollision(Constants.CATEGORY_PLAYER_FEET, false);
+			}
+			if (tar.getFilterData().categoryBits == Constants.CATEGORY_PLAYER_FEET) {
+				target.getComponent(Physics.class).setSensorCollision(Constants.CATEGORY_PLAYER_FEET, false);
+			}
+		}
 		
-		if (source instanceof Player && tar.getFilterData().categoryBits == Constants.CATEGORY_WORLD) 
-			source.getComponent(Physics.class).setSensorCollision(src.getFilterData().categoryBits, false);
-		if (target instanceof Player && src.getFilterData().categoryBits == Constants.CATEGORY_WORLD) 
-			target.getComponent(Physics.class).setSensorCollision(tar.getFilterData().categoryBits, false);
+		if (source instanceof Enemy || source instanceof Upgrade || source instanceof Slider) source.getComponent(Behaviour.class).endCollision(target);
+		else if (target instanceof Enemy || target instanceof Upgrade || target instanceof Slider) target.getComponent(Behaviour.class).endCollision(source);
+	
 	}
 	
 	@Override
 	public void removed(Entity e) {
 		super.removed(e);
 		Box2dBodyFactory.removeBody(e.getComponent(Physics.class).getBody());
+	}
+
+
+	public void beginContact(Contact contact) {
+		beginCollision(contact.getFixtureA(), contact.getFixtureB());
+	}
+
+
+	public void endContact(Contact contact) {
+		endCollision(contact.getFixtureA(), contact.getFixtureB());
+	}
+
+
+	public void preSolve(Contact contact, Manifold oldManifold) {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+	public void postSolve(Contact contact, ContactImpulse impulse) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

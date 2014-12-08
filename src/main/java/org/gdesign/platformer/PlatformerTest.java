@@ -8,6 +8,7 @@ import org.gdesign.platformer.components.Position;
 import org.gdesign.platformer.core.Constants;
 import org.gdesign.platformer.entities.Enemy;
 import org.gdesign.platformer.entities.Player;
+import org.gdesign.platformer.entities.Slider;
 import org.gdesign.platformer.entities.Upgrade;
 import org.gdesign.platformer.managers.PlayerManager;
 import org.gdesign.platformer.systems.AnimationRenderSystem;
@@ -23,6 +24,7 @@ import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
+import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 
 public class PlatformerTest implements ApplicationListener, InputProcessor {
 		
@@ -37,7 +39,7 @@ public class PlatformerTest implements ApplicationListener, InputProcessor {
         cfg.useGL30 = false;
         cfg.width = 1024;
         cfg.height = 768;
-        cfg.x = 2000;
+        //cfg.x = 2000;
         cfg.resizable = false;
         cfg.vSyncEnabled = false;
         new LwjglApplication(new PlatformerTest(), cfg);
@@ -53,31 +55,40 @@ public class PlatformerTest implements ApplicationListener, InputProcessor {
 		world.setSystem(new SimulationSystem(0, -16.8f));
 		world.setSystem(new TextureRenderSystem());
 		world.setSystem(new AnimationRenderSystem());
-		world.setSystem(new LightSimulationSystem());
+		//world.setSystem(new LightSimulationSystem());
 		world.setSystem(new DebugInfoSystem());		
 
 		world.setManager(new PlayerManager());
 		
 		Entity floor = world.createEntity();
 		floor.addComponent(new Position())
-		.addComponent(new Physics(world,0, 0, 8000, 2,Constants.CATEGORY_WORLD_FLOOR,Constants.MASK_WORLD,floor))
+		.addComponent(new Physics(world,0, 0, 8000, 2,BodyType.StaticBody,Constants.CATEGORY_WORLD,Constants.MASK_WORLD,floor))
 		.addToWorld();
 		
 		Entity wallLeft = world.createEntity();
 		wallLeft.addComponent(new Position())
-		.addComponent(new Physics(world,0, 0, 2, 1200,Constants.CATEGORY_WORLD_FLOOR,Constants.MASK_WORLD,wallLeft))
+		.addComponent(new Physics(world,0, 0, 2, 1200,BodyType.StaticBody,Constants.CATEGORY_WORLD,Constants.MASK_WORLD,wallLeft))
 		.addToWorld();
 
 		Entity wallRight = world.createEntity();
 		wallRight.addComponent(new Position())
-		.addComponent(new Physics(world,1200, 0, 2, 1200,Constants.CATEGORY_WORLD_WALL,Constants.MASK_WORLD,wallRight))
+		.addComponent(new Physics(world,1200, 0, 2, 1200,BodyType.StaticBody,Constants.CATEGORY_WORLD,Constants.MASK_WORLD,wallRight))
 		.addToWorld();
 		
-		world.getManager(PlayerManager.class).setPlayer(new Player(world, 100, 400));
+		/*
+		Entity testBox = world.createEntity();
+		testBox.addComponent(new Position())
+		.addComponent(new Physics(world,440, 150, 25, 25,BodyType.DynamicBody,Constants.CATEGORY_WORLD,Constants.MASK_WORLD,testBox))
+		.addToWorld();
+		*/
+		
 		
 		//new Upgrade(world, 100, 120);
 		//new Enemy(world, 500, 0, "scripts/behaviour/enemy.default.lua", "textures/entity/player/player.png");
-		world.getManager(PlayerManager.class).getPlayer().getComponent(Behaviour.class).setScript("scripts/control/testMov.lua");
+		new Slider(world, 400, 100, "scripts/behaviour/slider.default.lua");
+		world.getManager(PlayerManager.class).setPlayer(new Player(world, 470, 200));
+		//world.getManager(PlayerManager.class).getPlayer().getComponent(Behaviour.class).setScript("scripts/control/testMov.lua");
+		
 	}
  
 	public void dispose() {
@@ -116,6 +127,10 @@ public class PlatformerTest implements ApplicationListener, InputProcessor {
 
 	public boolean keyTyped(char character) {
 		if (character == 'd') BOX2D_WORLD_DEBUG = (BOX2D_WORLD_DEBUG ? false : true);
+		if (character == 'l') if ( world.getSystem(CameraSystem.class).isLocked() ) 
+			world.getSystem(CameraSystem.class).lockCamera(false);
+		else
+			 world.getSystem(CameraSystem.class).lockCamera(true);
 		return false;
 	}
 

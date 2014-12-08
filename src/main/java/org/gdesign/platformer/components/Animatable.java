@@ -39,6 +39,12 @@ public class Animatable extends Renderable {
 		flipY = false;
 	}
 	
+	public Animatable flip(boolean x, boolean y){
+		flipX = x;
+		flipY = y;
+		return this;
+	}
+	
 	public Animation getAnimation(String name){
 		return animations.get(name);
 	}
@@ -58,8 +64,7 @@ public class Animatable extends Renderable {
 	}
 
 	public Animatable setCurrentAnimation(String name, boolean reset, boolean flipXaxis, boolean flipYaxis){	
-		flipX = flipXaxis;
-		flipY = flipYaxis;
+		flip(flipXaxis,flipYaxis);
 		return setCurrentAnimation(name,reset);
 	}
 	

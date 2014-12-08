@@ -1,8 +1,5 @@
 package org.gdesign.platformer.scripting;
 
-import java.awt.im.InputContext;
-import java.util.concurrent.CopyOnWriteArrayList;
-
 import org.gdesign.games.ecs.BaseComponent;
 import org.gdesign.games.ecs.Entity;
 import org.gdesign.platformer.core.Constants;
@@ -18,6 +15,7 @@ import org.luaj.vm2.lib.jse.JsePlatform;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.controllers.Controllers;
 import com.badlogic.gdx.controllers.PovDirection;
+import com.badlogic.gdx.physics.box2d.JointDef.JointType;
 
 public abstract class Scriptable extends BaseComponent{
 	private boolean initialized=false;
@@ -50,6 +48,7 @@ public abstract class Scriptable extends BaseComponent{
 		_G.set("INPUT", CoerceJavaToLua.coerce(InputSettings.class));
 		_G.set("CONST", CoerceJavaToLua.coerce(Constants.class));
 		_G.set("GDX", CoerceJavaToLua.coerce(Gdx.class));
+		_G.set("JOINT", CoerceJavaToLua.coerce(JointType.class));
 		_G.set("_self", CoerceJavaToLua.coerce(entity));
 		_G.set("_world", CoerceJavaToLua.coerce(entity.getWorld()));
 		_G.set("component",new OneArgFunction() {

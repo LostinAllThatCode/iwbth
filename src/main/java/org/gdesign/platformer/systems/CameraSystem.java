@@ -14,9 +14,18 @@ import com.badlogic.gdx.math.Vector3;
 public class CameraSystem extends SingleProcessSystem {
 	
 	private OrthographicCamera camera;
+	private boolean lockCamera;
 	
 	public OrthographicCamera getCamera(){
 		return camera;
+	}
+	
+	public void lockCamera(boolean lock){
+		lockCamera = lock; 
+	}
+	
+	public boolean isLocked(){
+		return lockCamera;
 	}
 	
 	public void setZoom(float zoom) {
@@ -39,13 +48,14 @@ public class CameraSystem extends SingleProcessSystem {
 	
 	@Override
 	public void processSystem() {
-		Position position = world.getManager(PlayerManager.class).getPlayer().getComponent(Position.class);	
+		if (!isLocked()) {
+			Position position = world.getManager(PlayerManager.class).getPlayer().getComponent(Position.class);	
 
-		float lerp = 0.25f;
-		Vector3 camerapos = this.getCamera().position;
-		camerapos.x += ((position.x * Constants.BOX_TO_WORLD) - camerapos.x) * lerp;
-		camerapos.y += (((position.y * Constants.BOX_TO_WORLD) - camerapos.y) * lerp);
-		
+			float lerp = 0.25f;
+			Vector3 camerapos = this.getCamera().position;
+			camerapos.x += ((position.x * Constants.BOX_TO_WORLD) - camerapos.x) * lerp;
+			camerapos.y += (((position.y * Constants.BOX_TO_WORLD) - camerapos.y) * lerp);			
+		}
 	}
 	
 	@Override
