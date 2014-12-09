@@ -58,8 +58,8 @@ public class Box2dBodyFactory {
 		CircleShape shape = new CircleShape();
 		FixtureDef sensorfixtureDef = new FixtureDef();
 		
-		shape.setRadius(width/2 * Constants.WORLD_TO_BOX);
-		shape.setPosition(new Vector2(0,-height*Constants.WORLD_TO_BOX/2 * .95f));
+		shape.setRadius(width/2 * Constants.WORLD_TO_BOX * .9f);
+		shape.setPosition(new Vector2(0,-height*Constants.WORLD_TO_BOX/2 * .9f));
 		sensorfixtureDef.shape = shape;
 	    sensorfixtureDef.filter.categoryBits = Constants.CATEGORY_PLAYER_FEET;
 	    sensorfixtureDef.filter.maskBits = Constants.MASK_PLAYER;

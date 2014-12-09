@@ -5,9 +5,9 @@ jumpCount	= 0
 -- Static final values to determine execution 
 airdrag 	= .6
 maxJumps 	= 2
-maxVelY		= 8
+maxImpY		= .6
 maxVelX		= 6
-imp			= 1
+imp			= .06
 
 function doBehaviour()
 	
@@ -16,7 +16,6 @@ function doBehaviour()
 	anim		= _self:getComponent(component("Animatable"))
 	
 	position 	= physics:getBody():getPosition()
-	vecVel 		= physics.body:getLinearVelocity()
 	
 	if physics.SENSOR_FEET then 
 		jumpCount = 0
@@ -25,46 +24,33 @@ function doBehaviour()
 		drag = airdrag
 	end
 	
-	if physics.SENSOR_FEET and isKeyDown(INPUT.KEY_JUMP) then 
-		dVelY = dVelY + 1
-		if dVelY >= maxVelY then 
-			dVelY = maxVelY
+	if isKeyDown(INPUT.KEY_JUMP) and jumpCount < maxJumps then 
+		if dVelY == 0 then dVelY = .1 end
+		dVelY = dVelY + .1
+		if dVelY >= maxImpY then 
+			dVelY = maxImpY
 		end
 	end
 	
-	if physics.SENSOR_FEET and not isKeyDown(INPUT.KEY_JUMP) and dVelY > 0 and jumpCount == 0 then 
-		vecVel.y = dVelY
-		physics.body:setLinearVelocity(vecVel.x,vecVel.y);
+	if not isKeyDown(INPUT.KEY_JUMP) and dVelY > 0 and jumpCount < maxJumps then
+		physics.body:setLinearVelocity(physics.body:getLinearVelocity().x,0)
+		physics.body:applyLinearImpulse(0,dVelY,position.x,position.y,true);
 		dVelY = 0
 		jumpCount=jumpCount+1
 		anim:setCurrentAnimation("JUMPING",true)
 		physics.SENSOR_FEET = false
 	end	
 	
-	if not physics.SENSOR_FEET and isKeyDown(INPUT.KEY_JUMP) and jumpCount > 0 and jumpCount < maxJumps then
-		dVelY = dVelY + 1
-		if dVelY >= maxVelY then 
-			dVelY = maxVelY
-		end
-	end
-	
-	if not physics.SENSOR_FEET and not isKeyDown(INPUT.KEY_JUMP) and dVelY > 0 and jumpCount > 0 and jumpCount < maxJumps then
-		vecVel.y = dVelY
-		physics.body:setLinearVelocity(vecVel.x,vecVel.y);
-		dVelY = 0
-		jumpCount=jumpCount+1
-		anim:setCurrentAnimation("JUMPING",true)
-		physics.SENSOR_FEET = false
-	end
-	
 	if isKeyDown(INPUT.KEY_LEFT) and not isKeyDown(INPUT.KEY_RIGHT) then 
 		physics.body:applyLinearImpulse(-imp,0,position.x,position.y,true);
 		if physics.SENSOR_FEET then anim:setCurrentAnimation("RUNNING") end
+		anim:flip(true,false)
 	end
 		
 	if isKeyDown(INPUT.KEY_RIGHT) and not isKeyDown(INPUT.KEY_LEFT) then 
 		physics.body:applyLinearImpulse(imp,0,position.x,position.y,true);
 		if physics.SENSOR_FEET then anim:setCurrentAnimation("RUNNING") end
+		anim:flip(false,false)
 	end
 	
 	vecVel = physics.body:getLinearVelocity()
@@ -86,6 +72,10 @@ function doBehaviour()
 		end
 		vecVel.x = math.sign(vecVel.x) * maxVelX
 		physics.body:setLinearVelocity(vecVel.x * drag,vecVel.y)
+	end
+	
+	if vecVel.y > 8 then 
+		physics.body:setLinearVelocity(vecVel.x * drag , 8)
 	end
 	
 end

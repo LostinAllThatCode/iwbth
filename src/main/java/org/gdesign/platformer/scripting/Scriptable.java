@@ -107,7 +107,7 @@ public abstract class Scriptable extends BaseComponent{
 		return this;
 	}
 	
-	protected Varargs call(String function, LuaValue... args){
+	public Varargs call(String function, LuaValue... args){
 		if (initialized) {
 			return _G.get(function).invoke(args);
 		} else {
@@ -116,7 +116,7 @@ public abstract class Scriptable extends BaseComponent{
 		}
 	}
 	
-	protected Varargs call(String function){
+	public Varargs call(String function){
 		return call(function,LuaValue.NILS);
 	}
 	

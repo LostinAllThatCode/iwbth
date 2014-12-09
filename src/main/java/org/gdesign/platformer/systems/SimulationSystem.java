@@ -109,13 +109,12 @@ public class SimulationSystem extends EntityProcessingSystem implements ContactL
 		Entity source = (Entity) src.getBody().getUserData();
 		Entity target = (Entity) tar.getBody().getUserData();
 		
-		if (src.isSensor() || tar.isSensor()){
-			if (src.getFilterData().categoryBits == Constants.CATEGORY_PLAYER_FEET) {
-				source.getComponent(Physics.class).setSensorCollision(Constants.CATEGORY_PLAYER_FEET, false);
-			}
-			if (tar.getFilterData().categoryBits == Constants.CATEGORY_PLAYER_FEET) {
-				target.getComponent(Physics.class).setSensorCollision(Constants.CATEGORY_PLAYER_FEET, false);
-			}
+
+		if (src.getFilterData().categoryBits == Constants.CATEGORY_PLAYER_FEET) {
+			source.getComponent(Physics.class).setSensorCollision(Constants.CATEGORY_PLAYER_FEET, false);
+		}
+		if (tar.getFilterData().categoryBits == Constants.CATEGORY_PLAYER_FEET) {
+			target.getComponent(Physics.class).setSensorCollision(Constants.CATEGORY_PLAYER_FEET, false);
 		}
 		
 		if (source instanceof Enemy || source instanceof Upgrade || source instanceof Slider) source.getComponent(Behaviour.class).endCollision(target);

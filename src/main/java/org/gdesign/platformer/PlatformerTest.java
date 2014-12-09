@@ -55,7 +55,7 @@ public class PlatformerTest implements ApplicationListener, InputProcessor {
 		world.setSystem(new SimulationSystem(0, -16.8f));
 		world.setSystem(new TextureRenderSystem());
 		world.setSystem(new AnimationRenderSystem());
-		//world.setSystem(new LightSimulationSystem());
+		world.setSystem(new LightSimulationSystem());
 		world.setSystem(new DebugInfoSystem());		
 
 		world.setManager(new PlayerManager());
@@ -75,17 +75,21 @@ public class PlatformerTest implements ApplicationListener, InputProcessor {
 		.addComponent(new Physics(world,1200, 0, 2, 1200,BodyType.StaticBody,Constants.CATEGORY_WORLD,Constants.MASK_WORLD,wallRight))
 		.addToWorld();
 		
-		/*
+		
 		Entity testBox = world.createEntity();
 		testBox.addComponent(new Position())
-		.addComponent(new Physics(world,440, 150, 25, 25,BodyType.DynamicBody,Constants.CATEGORY_WORLD,Constants.MASK_WORLD,testBox))
+		.addComponent(new Physics(world,440, 150, 25, 25,BodyType.DynamicBody,Constants.CATEGORY_OBJECT,Constants.MASK_OBJECT,testBox))
 		.addToWorld();
-		*/
+		
 		
 		
 		//new Upgrade(world, 100, 120);
 		//new Enemy(world, 500, 0, "scripts/behaviour/enemy.default.lua", "textures/entity/player/player.png");
-		new Slider(world, 400, 100, "scripts/behaviour/slider.default.lua");
+		new Slider(world, 400, 100, "scripts/behaviour/slider.default.lua",.5f);
+		new Slider(world, 800, 100, "scripts/behaviour/slider.default.lua",.7f);
+		new Slider(world, 100, 300, "scripts/behaviour/slider.default.lua",.8f);
+		new Slider(world, 300, 400, "scripts/behaviour/slider.default.lua",1f);
+		new Slider(world, 600, 500, "scripts/behaviour/slider.default.lua",1.5f);
 		world.getManager(PlayerManager.class).setPlayer(new Player(world, 470, 200));
 		//world.getManager(PlayerManager.class).getPlayer().getComponent(Behaviour.class).setScript("scripts/control/testMov.lua");
 		

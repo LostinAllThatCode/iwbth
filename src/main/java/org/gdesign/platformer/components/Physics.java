@@ -32,11 +32,11 @@ public class Physics extends BaseComponent{
 				break;
 			case Constants.CATEGORY_OBJECT:
 				body = Box2dBodyFactory.createBody(type, x, y, true);
-				Box2dBodyFactory.addDefaultFixture(body, width, height, category, mask, 100);
+				Box2dBodyFactory.addDefaultFixture(body, width, height, category, mask, .05f);
 				break;
 			case Constants.CATEGORY_WORLD:
 				body = Box2dBodyFactory.createBody(type, x, y, true);
-				Box2dBodyFactory.addDefaultFixture(body, width, height, category, mask,10f);
+				Box2dBodyFactory.addDefaultFixture(body, width, height, category, mask,10);
 				break;
 			default:
 				break;
