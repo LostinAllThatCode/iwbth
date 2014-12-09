@@ -8,7 +8,6 @@ import org.gdesign.platformer.components.Physics;
 import org.gdesign.platformer.components.Position;
 import org.gdesign.platformer.core.Constants;
 
-import com.badlogic.gdx.physics.box2d.JointDef;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 
 public class Enemy extends Entity {
