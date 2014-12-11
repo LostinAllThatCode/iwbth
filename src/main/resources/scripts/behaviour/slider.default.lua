@@ -1,33 +1,35 @@
-moveX = 0
-time = 0
-starttime = 0
 started = false
+time = 0
 
-originX = 0 
+_sliderDistance = 0
+_sliderTimeTrigger = 0
+_sliderOriginX = 0 
+_sliderSpeed = 5
+_sliderDir = 1
 
-speed = 5
-dir = 1
 
-function init(t, distance)
-	starttime = t
-	moveX = distance
+function init(t, distance, speed, dir)
+	_sliderTimeTrigger = tonumber(t)
+	_sliderDistance = tonumber(distance)
+	_sliderSpeed = speed
+	_sliderDir = dir
 end
 
 function doBehaviour()	
 	time = time + _world:getDelta()
-	if (time >= starttime) then started = true end
+	if (time >= _sliderTimeTrigger) then started = true end
 	if (started) then 
 		physics = _self:getComponent(component("Physics"))
 		current = physics:getBody():getPosition()
-		if (math.abs(originX - current.x) >= moveX) then 
-			dir = dir * -1 
-			originX = current.x	
+		if (math.abs(_sliderOriginX - current.x) >= _sliderDistance) then 
+			_sliderDir = _sliderDir * -1 
+			_sliderOriginX = current.x	
 		end
-		physics.body:setLinearVelocity(speed * dir,0)
+		physics.body:setLinearVelocity(_sliderSpeed * _sliderDir,0)
 	else
 		if (origin == nil) then 
 			physics = _self:getComponent(component("Physics"))
-			originX = physics:getBody():getPosition().x
+			_sliderOriginX = physics:getBody():getPosition().x
 		end
 	end
 end

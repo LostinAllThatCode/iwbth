@@ -1,5 +1,7 @@
 package org.gdesign.platformer;
 
+import java.util.HashMap;
+
 import org.gdesign.games.ecs.Entity;
 import org.gdesign.games.ecs.World;
 import org.gdesign.platformer.components.Behaviour;
@@ -27,6 +29,7 @@ import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
+import com.badlogic.gdx.utils.Json;
 
 public class PlatformerTest implements ApplicationListener, InputProcessor {
 		
@@ -80,11 +83,10 @@ public class PlatformerTest implements ApplicationListener, InputProcessor {
 		wallRight.addComponent(new Position())
 		.addComponent(new Physics(world,1200, 0, 2, 1200,BodyType.StaticBody,Constants.CATEGORY_WORLD,Constants.MASK_WORLD,wallRight))
 		.addToWorld();
-		
-		EntityFactory.createEnemy( 400, 0, "textures/entity/player/player.png", "scripts/behaviour/enemy.default.lua", true);	
-		EntityFactory.createEnemy( 800, 0, "textures/entity/player/player.png", "scripts/behaviour/enemy.default.lua", true);
-		
-		EntityFactory.createPlayer(200, 50);
+
+		EntityFactory.createEntityById(250, 50, 0);
+		EntityFactory.createEntityById(400, 50, 1);
+		EntityFactory.createEntityById(250, 200, 2);
 		//world.getManager(PlayerManager.class).getPlayer().getComponent(Behaviour.class).setScript("scripts/control/testMov.lua");
 		
 	}

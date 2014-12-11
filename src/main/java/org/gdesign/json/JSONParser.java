@@ -15,7 +15,7 @@ import com.badlogic.gdx.utils.JsonValue;
 
 public class JSONParser {
 
-	private static JsonReader jsonReader;
+	public static JsonReader jsonReader;
 	
 	static {
 		jsonReader = new JsonReader();

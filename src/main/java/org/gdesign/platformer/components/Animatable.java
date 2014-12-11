@@ -31,7 +31,6 @@ public class Animatable extends Renderable {
 				currentAnimation = animations.get(currentAnimationString);
 			}
 		}
-
 		stateTime = 0f;
 		flipX = false;
 		flipY = false;

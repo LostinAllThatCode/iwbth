@@ -18,6 +18,16 @@ public class Renderable extends BaseComponent {
 		offset = new Vector2(0,0);
 	}
 	
+	public Renderable(Texture t, int x, int y, int width, int height) {
+		this(t);
+		setRegion(x, y, width, height);
+	}
+	
+	public Renderable setRegion(int x, int y, int width, int height){
+		region.setRegion(x, y, width, height);
+		return this;
+	}
+	
 	public Renderable setOffset(float x, float y){
 		offset.x = x;
 		offset.y = y;
