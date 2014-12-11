@@ -65,6 +65,8 @@ public class Box2dBodyFactory {
 	    sensorfixtureDef.filter.maskBits = Constants.MASK_PLAYER;
 		b.createFixture(sensorfixtureDef);
 		
+		shape.dispose();
+		
 	}
 	
 	public static void removeBody(Body b){

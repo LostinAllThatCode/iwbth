@@ -23,7 +23,9 @@ public class PlayerManager extends BaseManager {
 	public void changed(Entity e) {}
 
 	@Override
-	public void removed(Entity e) {}
+	public void removed(Entity e) {
+		if (e.equals(playerEntity)) playerEntity = null;
+	}
 
 	@Override
 	public void enabled(Entity e) {}

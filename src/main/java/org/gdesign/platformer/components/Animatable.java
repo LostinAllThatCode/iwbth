@@ -6,6 +6,7 @@ import java.util.HashMap;
 import org.gdesign.json.JSONParser;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
@@ -20,11 +21,8 @@ public class Animatable extends Renderable {
 	public Animation currentAnimation;
 	public TextureRegion frame;
 	
-	private String json;
-	
-	public Animatable(String textureFile) {
-		super(textureFile);
-		json = textureFile.substring(0, textureFile.length()-3)+"json";
+	public Animatable(Texture t, String json) {
+		super(t);
 		animations = new HashMap<String, Animation>();
 		if (json != null) {
 			animations = JSONParser.parseAnimationFromJson(this,json);

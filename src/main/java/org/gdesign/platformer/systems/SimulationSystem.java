@@ -8,10 +8,6 @@ import org.gdesign.platformer.components.Behaviour;
 import org.gdesign.platformer.components.Physics;
 import org.gdesign.platformer.components.Position;
 import org.gdesign.platformer.core.Constants;
-import org.gdesign.platformer.entities.Enemy;
-import org.gdesign.platformer.entities.Player;
-import org.gdesign.platformer.entities.Slider;
-import org.gdesign.platformer.entities.Upgrade;
 import org.gdesign.platformer.factories.Box2dBodyFactory;
 
 import com.badlogic.gdx.Gdx;
@@ -21,11 +17,9 @@ import com.badlogic.gdx.physics.box2d.Contact;
 import com.badlogic.gdx.physics.box2d.ContactImpulse;
 import com.badlogic.gdx.physics.box2d.ContactListener;
 import com.badlogic.gdx.physics.box2d.Fixture;
-import com.badlogic.gdx.physics.box2d.JointDef;
-import com.badlogic.gdx.physics.box2d.JointDef.JointType;
 import com.badlogic.gdx.physics.box2d.Manifold;
 import com.badlogic.gdx.physics.box2d.World;
-import com.badlogic.gdx.physics.box2d.joints.DistanceJointDef;
+
 
 public class SimulationSystem extends EntityProcessingSystem implements ContactListener {
 	private Physics physics;
@@ -63,6 +57,7 @@ public class SimulationSystem extends EntityProcessingSystem implements ContactL
 	
 	@Override
 	protected void begin() {
+		
 		simulation.step(Gdx.graphics.getDeltaTime(), 8, 3);
 	}
 	
@@ -86,7 +81,6 @@ public class SimulationSystem extends EntityProcessingSystem implements ContactL
 	
 	@Override
 	protected void end() {
-	
 	}
 	
 	private void beginCollision(Fixture src, Fixture tar) {
@@ -99,10 +93,8 @@ public class SimulationSystem extends EntityProcessingSystem implements ContactL
 		if (tar.getFilterData().categoryBits == Constants.CATEGORY_PLAYER_FEET) {
 			target.getComponent(Physics.class).setSensorCollision(Constants.CATEGORY_PLAYER_FEET, true);
 		}
-		
-		if (source instanceof Enemy || source instanceof Upgrade || source instanceof Slider) source.getComponent(Behaviour.class).beginCollision(target);
-		else if (target instanceof Enemy || target instanceof Upgrade || target instanceof Slider) target.getComponent(Behaviour.class).beginCollision(source);
-	
+		if (source.hasComponent(Behaviour.class)) source.getComponent(Behaviour.class).beginCollision(target);
+		if (target.hasComponent(Behaviour.class)) target.getComponent(Behaviour.class).beginCollision(source);
 	}
 	
 	private void endCollision(Fixture src, Fixture tar) {
@@ -116,9 +108,8 @@ public class SimulationSystem extends EntityProcessingSystem implements ContactL
 		if (tar.getFilterData().categoryBits == Constants.CATEGORY_PLAYER_FEET) {
 			target.getComponent(Physics.class).setSensorCollision(Constants.CATEGORY_PLAYER_FEET, false);
 		}
-		
-		if (source instanceof Enemy || source instanceof Upgrade || source instanceof Slider) source.getComponent(Behaviour.class).endCollision(target);
-		else if (target instanceof Enemy || target instanceof Upgrade || target instanceof Slider) target.getComponent(Behaviour.class).endCollision(source);
+		if (source.hasComponent(Behaviour.class)) source.getComponent(Behaviour.class).endCollision(target);
+		if (target.hasComponent(Behaviour.class)) target.getComponent(Behaviour.class).endCollision(source);
 	
 	}
 	

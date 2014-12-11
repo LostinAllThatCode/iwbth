@@ -1,5 +1,6 @@
 package org.gdesign.platformer.systems;
 
+import org.gdesign.games.ecs.Entity;
 import org.gdesign.games.ecs.systems.SingleProcessSystem;
 import org.gdesign.platformer.components.Position;
 import org.gdesign.platformer.core.Constants;
@@ -49,12 +50,15 @@ public class CameraSystem extends SingleProcessSystem {
 	@Override
 	public void processSystem() {
 		if (!isLocked()) {
-			Position position = world.getManager(PlayerManager.class).getPlayer().getComponent(Position.class);	
+			Entity player = world.getManager(PlayerManager.class).getPlayer();
+			if (player != null){
+				Position position = player.getComponent(Position.class);	
 
-			float lerp = 0.25f;
-			Vector3 camerapos = this.getCamera().position;
-			camerapos.x += ((position.x * Constants.BOX_TO_WORLD) - camerapos.x) * lerp;
-			camerapos.y += (((position.y * Constants.BOX_TO_WORLD) - camerapos.y) * lerp);			
+				float lerp = 0.25f;
+				Vector3 camerapos = this.getCamera().position;
+				camerapos.x += ((position.x * Constants.BOX_TO_WORLD) - camerapos.x) * lerp;
+				camerapos.y += (((position.y * Constants.BOX_TO_WORLD) - camerapos.y) * lerp);	
+			}
 		}
 	}
 	

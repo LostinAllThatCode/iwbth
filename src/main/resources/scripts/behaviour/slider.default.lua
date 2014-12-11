@@ -1,36 +1,40 @@
-radius = 2
-angle = 0
-speed = .05
+moveX = 0
 time = 0
 starttime = 0
 started = false
 
-function init(t)
+originX = 0 
+
+speed = 5
+dir = 1
+
+function init(t, distance)
 	starttime = t
+	moveX = distance
 end
 
-function doBehaviour()
-	time = time + GDX.graphics:getDeltaTime()
+function doBehaviour()	
+	time = time + _world:getDelta()
 	if (time >= starttime) then started = true end
 	if (started) then 
 		physics = _self:getComponent(component("Physics"))
-		spos = physics:getBody():getPosition()
-	
-		angle = angle + speed
-		if angle == 1 then angle = 0 end
-		x = math.sin(angle) * radius
-		y = math.cos(angle) * radius
-		
-		physics.body:setLinearVelocity(x,y)
+		current = physics:getBody():getPosition()
+		if (math.abs(originX - current.x) >= moveX) then 
+			dir = dir * -1 
+			originX = current.x	
+		end
+		physics.body:setLinearVelocity(speed * dir,0)
+	else
+		if (origin == nil) then 
+			physics = _self:getComponent(component("Physics"))
+			originX = physics:getBody():getPosition().x
+		end
 	end
-	
 end
 
 
 function beginCollision(target)
-	--target:getComponent(component("Physics")):getBody():getFixtureList():get(0):setFriction(1);
 end
 
 function endCollision(target)
-	--target:getComponent(component("Physics")):getBody():getFixtureList():get(0):setFriction(0);
 end

@@ -10,7 +10,9 @@ import org.gdesign.platformer.entities.Enemy;
 import org.gdesign.platformer.entities.Player;
 import org.gdesign.platformer.entities.Slider;
 import org.gdesign.platformer.entities.Upgrade;
+import org.gdesign.platformer.factories.EntityFactory;
 import org.gdesign.platformer.managers.PlayerManager;
+import org.gdesign.platformer.managers.TextureManager;
 import org.gdesign.platformer.systems.AnimationRenderSystem;
 import org.gdesign.platformer.systems.LightSimulationSystem;
 import org.gdesign.platformer.systems.TextureRenderSystem;
@@ -32,6 +34,8 @@ public class PlatformerTest implements ApplicationListener, InputProcessor {
 	private Box2DDebugRenderer debugRenderer;
 	
 	private boolean BOX2D_WORLD_DEBUG = true;
+	
+	private PlayerManager pMan;
 			
 	public static void main(String[] args) {
         LwjglApplicationConfiguration cfg = new LwjglApplicationConfiguration();
@@ -41,24 +45,26 @@ public class PlatformerTest implements ApplicationListener, InputProcessor {
         cfg.height = 768;
         //cfg.x = 2000;
         cfg.resizable = false;
-        cfg.vSyncEnabled = false;
+        cfg.vSyncEnabled = true;
         new LwjglApplication(new PlatformerTest(), cfg);
 	}
 
 	public void create() {
 		Gdx.input.setInputProcessor(this);
 		debugRenderer = new Box2DDebugRenderer();
-		
+
 		world = new World();
+		
+		EntityFactory.initialize(world);
 		
 		world.setSystem(new CameraSystem());
 		world.setSystem(new SimulationSystem(0, -16.8f));
 		world.setSystem(new TextureRenderSystem());
 		world.setSystem(new AnimationRenderSystem());
 		world.setSystem(new LightSimulationSystem());
-		world.setSystem(new DebugInfoSystem());		
-
-		world.setManager(new PlayerManager());
+		world.setSystem(new DebugInfoSystem());	
+		
+		pMan = world.getManager(PlayerManager.class);
 		
 		Entity floor = world.createEntity();
 		floor.addComponent(new Position())
@@ -75,28 +81,16 @@ public class PlatformerTest implements ApplicationListener, InputProcessor {
 		.addComponent(new Physics(world,1200, 0, 2, 1200,BodyType.StaticBody,Constants.CATEGORY_WORLD,Constants.MASK_WORLD,wallRight))
 		.addToWorld();
 		
+		EntityFactory.createEnemy( 400, 0, "textures/entity/player/player.png", "scripts/behaviour/enemy.default.lua", true);	
+		EntityFactory.createEnemy( 800, 0, "textures/entity/player/player.png", "scripts/behaviour/enemy.default.lua", true);
 		
-		Entity testBox = world.createEntity();
-		testBox.addComponent(new Position())
-		.addComponent(new Physics(world,440, 150, 25, 25,BodyType.DynamicBody,Constants.CATEGORY_OBJECT,Constants.MASK_OBJECT,testBox))
-		.addToWorld();
-		
-		
-		
-		//new Upgrade(world, 100, 120);
-		//new Enemy(world, 500, 0, "scripts/behaviour/enemy.default.lua", "textures/entity/player/player.png");
-		new Slider(world, 400, 100, "scripts/behaviour/slider.default.lua",.5f);
-		new Slider(world, 800, 100, "scripts/behaviour/slider.default.lua",.7f);
-		new Slider(world, 100, 300, "scripts/behaviour/slider.default.lua",.8f);
-		new Slider(world, 300, 400, "scripts/behaviour/slider.default.lua",1f);
-		new Slider(world, 600, 500, "scripts/behaviour/slider.default.lua",1.5f);
-		world.getManager(PlayerManager.class).setPlayer(new Player(world, 470, 200));
+		EntityFactory.createPlayer(200, 50);
 		//world.getManager(PlayerManager.class).getPlayer().getComponent(Behaviour.class).setScript("scripts/control/testMov.lua");
 		
 	}
  
 	public void dispose() {
-		
+		world.getManager(TextureManager.class).dispose();
 	}
 
 	public void pause() {
@@ -104,9 +98,8 @@ public class PlatformerTest implements ApplicationListener, InputProcessor {
 	}
 
 	public void render() {
-		world.setDelta(Gdx.graphics.getDeltaTime());		
+		world.setDelta(Gdx.graphics.getDeltaTime());
 		world.process();
-		
 		if (BOX2D_WORLD_DEBUG) debugRenderer.render(world.getSystem(SimulationSystem.class).getSimulationWorld(),
 				world.getSystem(CameraSystem.class).getMatrix().scl(Constants.BOX_TO_WORLD));
 	}
@@ -163,4 +156,8 @@ public class PlatformerTest implements ApplicationListener, InputProcessor {
 		return false;
 	}
 	
+	public static void crash(int exitcode, String message){
+		System.err.println(message);
+		System.exit(exitcode);
+	}
 }

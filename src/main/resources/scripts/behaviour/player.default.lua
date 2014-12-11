@@ -10,8 +10,6 @@ maxVelX		= 6
 imp			= .06
 
 function doBehaviour()
-	
-	
 	physics 	= _self:getComponent(component("Physics"))
 	anim		= _self:getComponent(component("Animatable"))
 	
@@ -64,36 +62,21 @@ function doBehaviour()
 		
 	end
 	
-	if (math.abs(vecVel.x) > maxVelX) then 
-		if (math.sign(vecVel.x) == 1) then 
+	if (math.abs(vecVel.x) > maxVelX or vecVel.y > 8) then 
+		if (jmath:signum(vecVel.x) == 1) then 
 			anim:flip(false,false)
 		else
 			anim:flip(true,false)
 		end
-		vecVel.x = math.sign(vecVel.x) * maxVelX
+		if (math.abs(vecVel.x) > maxVelX) then vecVel.x = jmath:signum(vecVel.x) * maxVelX end
+		if (vecVel.y > 8) then vecVel.y = 8 end
 		physics.body:setLinearVelocity(vecVel.x * drag,vecVel.y)
 	end
-	
-	if vecVel.y > 8 then 
-		physics.body:setLinearVelocity(vecVel.x * drag , 8)
-	end
-	
 end
 
-function math.sign(x)
-   if x<0 then
-     return -1
-   elseif x>0 then
-     return 1
-   else
-     return 0
-   end
-end
 
 function beginCollision(target)	
-	print("begin" .. target)
 end
 
 function endCollision(target)
-	print("end" .. target)
 end

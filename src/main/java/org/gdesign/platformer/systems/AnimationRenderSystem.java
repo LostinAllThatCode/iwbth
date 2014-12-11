@@ -56,5 +56,6 @@ public class AnimationRenderSystem extends EntityProcessingSystem {
 			System.err.println(e);
 		}
 	}
+
 	
 }

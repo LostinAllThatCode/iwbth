@@ -38,7 +38,7 @@ public abstract class Scriptable extends BaseComponent{
 	 * 			return a + b
 	 * 		end
 	 * 
-	 * Ex.: Varargs args = call("testFunction",1,3);
+	 * Ex.: Varargs args = jcall("testFunction",1,3);
 	 * 		System.out.println(args.arg(1));
 	 */
 	public abstract void runScript();
@@ -49,6 +49,7 @@ public abstract class Scriptable extends BaseComponent{
 		_G.set("CONST", CoerceJavaToLua.coerce(Constants.class));
 		_G.set("GDX", CoerceJavaToLua.coerce(Gdx.class));
 		_G.set("JOINT", CoerceJavaToLua.coerce(JointType.class));
+		_G.set("jmath",CoerceJavaToLua.coerce(Math.class));
 		_G.set("_self", CoerceJavaToLua.coerce(entity));
 		_G.set("_world", CoerceJavaToLua.coerce(entity.getWorld()));
 		_G.set("component",new OneArgFunction() {
@@ -106,6 +107,20 @@ public abstract class Scriptable extends BaseComponent{
 		_LUA = script;
 		return this;
 	}
+	
+	public Varargs jcall(String function, Object... args){
+		if (initialized) {
+			LuaValue[] values = new LuaValue[args.length];
+			int i=0;
+			for (Object o : args){
+				values[i++] = CoerceJavaToLua.coerce(o);
+			}
+			return _G.get(function).invoke(values);
+		} else {
+			System.err.println("No lua script file is attached. Use .setLuaScript()");
+			return null;
+		}
+	}	
 	
 	public Varargs call(String function, LuaValue... args){
 		if (initialized) {

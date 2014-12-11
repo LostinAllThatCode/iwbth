@@ -2,26 +2,29 @@ package org.gdesign.platformer.components;
 
 import org.gdesign.games.ecs.Entity;
 import org.gdesign.platformer.scripting.Scriptable;
-import org.luaj.vm2.lib.jse.CoerceJavaToLua;
 
 public class Behaviour extends Scriptable {
-		
 
-	public Behaviour(String script, Entity e) {
+	public Behaviour(Entity e, String script) {
 		super(script, e);
+	}
+	
+	public Behaviour(Entity e, String script, Object... obj){
+		super(script, e);
+		jcall("init",obj);
 	}
 
 	@Override
 	public void runScript() {
-		call("doBehaviour");
+		jcall("doBehaviour");
 	}
 	
 	public void beginCollision(Entity target){
-		call("beginCollision",CoerceJavaToLua.coerce(target));
+		jcall("beginCollision",target);
 	}
 	
 	public void endCollision(Entity target){
-		call("endCollision",CoerceJavaToLua.coerce(target));
+		jcall("endCollision",target);
 	}
 
 }
