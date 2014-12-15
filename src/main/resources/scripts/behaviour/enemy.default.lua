@@ -1,14 +1,19 @@
 speed = 3
-dir = 1
+dir = 0
 dt = 0
 oldDir = 0
 
 body = nil
 
 
+function init(direction, movementSpeed)
+	dir = direction
+	speed = movementSpeed
+end
+
 function doBehaviour()	
 	dt = dt + _world:getDelta()
-
+	
 	physics 	= _self:getComponent(component("Physics"))
 	anim		= _self:getComponent(component("Animatable"))
 	
@@ -29,13 +34,17 @@ end
 
 
 function beginCollision(target)
-	if (target:getComponent(component("Physics")):getCategory() == CONST.CATEGORY_PLAYER) then target:destroy() end
-	--[[
-	if (body == nil) then body =  _self:getComponent(component("Physics")):getBody() end
-	vec = body:getLinearVelocity()
-	dir = dir * -1
-	--]]
+	if (type(target) == "userdata") then --Entity collision	
+		if (target:getComponent(component("Physics")):getCategory() == CONST.CATEGORY_PLAYER) then target:destroy() end
+	elseif (type(target) == "number") then --Non-Entity collsion. Check with CONST.CATEGORY_* to determine collision
+	
+	end
 end
 
 function endCollision(target)
+	if (type(target) == "userdata") then --Entity collision	
+		
+	elseif (type(target) == "number") then --Non-Entity collsion. Check with CONST.CATEGORY_* to determine collision
+	
+	end
 end

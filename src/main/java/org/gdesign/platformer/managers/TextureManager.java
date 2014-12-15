@@ -1,7 +1,7 @@
 package org.gdesign.platformer.managers;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map.Entry;
 
 import org.gdesign.games.ecs.BaseManager;
@@ -12,20 +12,27 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Texture;
 
+
 public class TextureManager extends BaseManager {
+	
 	String mapping = "./target/classes/";
 	String location;
-	HashMap<String,Texture> textures;
+	LinkedHashMap<String,Texture> textures;
 	
 	public TextureManager(String textureLocation) {
-		textures = new HashMap<String,Texture>();
+		textures = new LinkedHashMap<String,Texture>();
 		location = mapping+textureLocation;
+		
 		if (preloadTextures()) {
 			for (String texturename : textures.keySet()){
-				System.out.println(texturename + " preloaded as " + textures.get(texturename));
+				Gdx.app.debug(TextureManager.class.toString(), "+ " + texturename + "@[" + textures.get(texturename) + "]");
 			}
 		}
-		else PlatformerTest.crash(1, "Error while preloading textures...");
+		else {
+			Gdx.app.error(TextureManager.class.toString(), "Error preloading textures.");
+			PlatformerTest.crash(1);
+		}
+		Gdx.app.log(TextureManager.class.toString(), "Textures/Spritesheets loaded.");
 	}
 	
 	public Texture getTexture(String location){
@@ -41,30 +48,24 @@ public class TextureManager extends BaseManager {
 		return "";
 	}
 
-	public String getAnimationData(String textureLocation){
-		return textureLocation.substring(0, textureLocation.length()-3)+"json";
-	}
-	
-	public String getAnimationData(Texture t){
-		String animData = getLocation(t);
-		return animData.substring(0, animData.length()-3)+"json";
-	}
-
 	public void dispose(){
-		System.out.println("TextureManager cleanup.");
 		for (Texture texture : textures.values()){
 			texture.dispose();
 		}
+		Gdx.app.log(TextureManager.class.toString(), "Textures/Spritesheets removed.");
 	}
 
 	private boolean preloadTextures(){
+		Gdx.app.debug(TextureManager.class.toString(), "Looking for textures...");
 		if ( !Gdx.files.internal(location).exists() ) return false;
 		ArrayList<FileHandle> files = new ArrayList<FileHandle>(); 
 		flist(Gdx.files.internal(location),files);
+		Gdx.app.debug(TextureManager.class.toString(), "Preloading " + files.size() + " textures...");
 		if (files.size() == 0) return false;
 		for (FileHandle f : files){
 			String texturePath = f.path().substring(mapping.length(), f.path().length());
-			textures.put(texturePath, new Texture(Gdx.files.internal(texturePath)));
+			Texture texture = new Texture(Gdx.files.internal(texturePath));
+			textures.put(texturePath,texture);			
 		}
 		return true;
 	}
@@ -79,33 +80,18 @@ public class TextureManager extends BaseManager {
 	}
 	
 	@Override
-	public void added(Entity e) {
-		// TODO Auto-generated method stub
-
-	}
+	public void added(Entity e) {}
 
 	@Override
-	public void changed(Entity e) {
-		// TODO Auto-generated method stub
-
-	}
+	public void changed(Entity e) {}
 
 	@Override
-	public void removed(Entity e) {
-		// TODO Auto-generated method stub
-
-	}
+	public void removed(Entity e) {}
 
 	@Override
-	public void enabled(Entity e) {
-		// TODO Auto-generated method stub
-
-	}
+	public void enabled(Entity e) {}
 
 	@Override
-	public void disabled(Entity e) {
-		// TODO Auto-generated method stub
-
-	}
+	public void disabled(Entity e) {}
 
 }

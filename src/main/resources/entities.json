@@ -1,48 +1,46 @@
 {
 	"prototypes": [{
-  		"id"		: 0,
   		"name" 		: "undefined",
-  		"type"    	: "Player",
+  		"type"    	: "player",
   		"health"	: 10,
   		"behaviour" : {
   			"lua"	: "scripts/behaviour/player.default.lua"
   		},
-  		"texture"	: {
+  		"animatable"	: {
   			"path"		: "textures/entity/player/player.png",
-  			"json"  	: "textures/entity/player/player.json",
-  			"offset_y"	: -5
+  			"data"  	: "textures/entity/player/player.json",
+  			"offsetY"	: -5
   		},
   		"physics" : {
   		  "width"     : 12,
   		  "height"    : 55
   		}
 	},{
-		"id"		: 1,
   		"name" 		: "enemy_player_model_0",
-  		"type"    	: "Enemy",
+  		"type"    	: "enemy",
   		"behaviour" : {
-  			"lua"	: "scripts/behaviour/enemy.default.lua"
+  			"lua"	: "scripts/behaviour/enemy.default.lua",
+  			"args" 		: [-1,1]
   		},
-  		"texture"	: {
+  		"animatable"	: {
   			"path"		: "textures/entity/player/player.png",
-  			"json" 		: "textures/entity/player/player.json",
-  			"offset_y"	: -5
+  			"data" 		: "textures/entity/player/player.json",
+  			"offsetY"	: -5
   		},
   		"physics" : {
   		  "width"     : 15,
   		  "height"    : 55
   		}
 	},{
-		 "id"		: 2,
   		"name" 		: "slider_horizontal_0",
-  		"type"    : "Slider",
+  		"type"    : "slider",
   		"behaviour" : {
   			"lua"	: "scripts/behaviour/slider.default.lua",
-  			"init" 	: [2,4,2,-1] 
+  			"args" 	: [2,4,2,-1]
   		},
   		"physics" : {
   		  "width"     : 100,
-  		  "height"    : 20
+  		  "height"    : 32
   		}
 	}
 	]

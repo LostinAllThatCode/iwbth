@@ -5,7 +5,6 @@ public class Constants {
 	public static final float WORLD_TO_BOX = 0.02f;
 	public static final float BOX_TO_WORLD = 50f;
 	
-	
 	public static final int CATEGORY_PLAYER_HEAD 		= 0x0001;
 	public static final int CATEGORY_PLAYER_FEET 		= 0x0002;
 	public static final int CATEGORY_PLAYER_LEFT 		= 0x0004;

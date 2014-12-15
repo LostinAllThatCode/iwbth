@@ -33,8 +33,7 @@ public class Animatable extends Renderable {
 			}
 		}
 		stateTime = 0f;
-		flipX = false;
-		flipY = false;
+		flip(false,false);
 	}
 	
 	public Animatable flip(boolean x, boolean y){
@@ -98,7 +97,7 @@ public class Animatable extends Renderable {
 	
 	@Override
 	public String toString() {
-		return "regionw="+frame.getRegionWidth()+",regionh="+frame.getRegionHeight()+","+super.toString();
+		return super.toString();
 	}
 	
 }

@@ -34,6 +34,11 @@ public class Renderable extends BaseComponent {
 		return this;
 	}
 	
+	public Renderable flip(boolean x, boolean y){
+		region.flip(x, y);
+		return this;
+	}
+	
 	public Vector2 getOffset(){
 		return offset;
 	}
@@ -48,7 +53,7 @@ public class Renderable extends BaseComponent {
 	
 	@Override
 	public String toString() {
-		return "w="+texture.getWidth()+",h="+texture.getHeight();
+		return "internal data";
 	}
 
 }

@@ -33,9 +33,8 @@ public class Box2dBodyFactory {
 		return b;
 	}
 	
-	public static void addDefaultFixture(Body b, float width, float height, int category, int mask, float friction){
+	public static Body addDefaultFixture(Body b, float width, float height, int category, int mask, float friction){
 		b.setTransform(b.getPosition().x + width*Constants.WORLD_TO_BOX/2, b.getPosition().y + height*Constants.WORLD_TO_BOX/2, 0);
-		
 		PolygonShape shape = new PolygonShape();
         shape.setAsBox(width*Constants.WORLD_TO_BOX/2,height*Constants.WORLD_TO_BOX/2);
 		FixtureDef fixtureDef = new FixtureDef();
@@ -48,6 +47,7 @@ public class Box2dBodyFactory {
 	    
 	    b.createFixture(fixtureDef);
 	    shape.dispose();
+	    return b;
 	}
 	
 	public static void addPlayerFixtureAndSensors(Body b, float width, float height, int category, int mask){
@@ -68,10 +68,26 @@ public class Box2dBodyFactory {
 		shape.dispose();
 		
 	}
+
+	public static void createRectangle(float x, float y ){
+		
+	}
+
+	
 	
 	public static void removeBody(Body b){
 		world.destroyBody(b);
 	}
-
+	
+	public static void disableBody(Body b){
+		b.setActive(false);
+		b.setAwake(false);
+	}
+	
+	public static void enableBody(Body b) {
+		b.setActive(true);
+		b.setAwake(true);
+	}
+	
 
 }

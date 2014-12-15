@@ -84,33 +84,39 @@ public class SimulationSystem extends EntityProcessingSystem implements ContactL
 	}
 	
 	private void beginCollision(Fixture src, Fixture tar) {
-		Entity source = (Entity) src.getBody().getUserData();
-		Entity target = (Entity) tar.getBody().getUserData();
+		Object source = src.getBody().getUserData();
+		Object target = tar.getBody().getUserData();
 
 		if (src.getFilterData().categoryBits == Constants.CATEGORY_PLAYER_FEET) {
-			source.getComponent(Physics.class).setSensorCollision(Constants.CATEGORY_PLAYER_FEET, true);
+			Entity.class.cast(source).getComponent(Physics.class).setSensorCollision(Constants.CATEGORY_PLAYER_FEET, true);
 		}
 		if (tar.getFilterData().categoryBits == Constants.CATEGORY_PLAYER_FEET) {
-			target.getComponent(Physics.class).setSensorCollision(Constants.CATEGORY_PLAYER_FEET, true);
+			Entity.class.cast(target).getComponent(Physics.class).setSensorCollision(Constants.CATEGORY_PLAYER_FEET, true);
 		}
-		if (source.hasComponent(Behaviour.class)) source.getComponent(Behaviour.class).beginCollision(target);
-		if (target.hasComponent(Behaviour.class)) target.getComponent(Behaviour.class).beginCollision(source);
+		if (source instanceof Entity) {
+			if (Entity.class.cast(source).hasComponent(Behaviour.class)) Entity.class.cast(source).getComponent(Behaviour.class).beginCollision(target);
+		}
+		if (target instanceof Entity) {
+			if (Entity.class.cast(target).hasComponent(Behaviour.class)) Entity.class.cast(target).getComponent(Behaviour.class).beginCollision(source);
+		}		
 	}
 	
 	private void endCollision(Fixture src, Fixture tar) {
-		Entity source = (Entity) src.getBody().getUserData();
-		Entity target = (Entity) tar.getBody().getUserData();
-		
+		Object source = src.getBody().getUserData();
+		Object target = tar.getBody().getUserData();
 
 		if (src.getFilterData().categoryBits == Constants.CATEGORY_PLAYER_FEET) {
-			source.getComponent(Physics.class).setSensorCollision(Constants.CATEGORY_PLAYER_FEET, false);
+			Entity.class.cast(source).getComponent(Physics.class).setSensorCollision(Constants.CATEGORY_PLAYER_FEET, false);
 		}
 		if (tar.getFilterData().categoryBits == Constants.CATEGORY_PLAYER_FEET) {
-			target.getComponent(Physics.class).setSensorCollision(Constants.CATEGORY_PLAYER_FEET, false);
+			Entity.class.cast(target).getComponent(Physics.class).setSensorCollision(Constants.CATEGORY_PLAYER_FEET, false);
 		}
-		if (source.hasComponent(Behaviour.class)) source.getComponent(Behaviour.class).endCollision(target);
-		if (target.hasComponent(Behaviour.class)) target.getComponent(Behaviour.class).endCollision(source);
-	
+		if (source instanceof Entity) {
+			if (Entity.class.cast(source).hasComponent(Behaviour.class)) Entity.class.cast(source).getComponent(Behaviour.class).endCollision(target);
+		}
+		if (target instanceof Entity) {
+			if (Entity.class.cast(target).hasComponent(Behaviour.class)) Entity.class.cast(target).getComponent(Behaviour.class).endCollision(source);
+		}	
 	}
 	
 	@Override
@@ -118,7 +124,17 @@ public class SimulationSystem extends EntityProcessingSystem implements ContactL
 		super.removed(e);
 		Box2dBodyFactory.removeBody(e.getComponent(Physics.class).getBody());
 	}
-
+	
+	@Override
+	public void disabled(Entity e) {
+		Box2dBodyFactory.disableBody(e.getComponent(Physics.class).getBody());
+	}
+	
+	@Override
+	public void enabled(Entity e) {
+		Box2dBodyFactory.enableBody(e.getComponent(Physics.class).getBody());
+	}
+	
 
 	public void beginContact(Contact contact) {
 		beginCollision(contact.getFixtureA(), contact.getFixtureB());
@@ -131,14 +147,10 @@ public class SimulationSystem extends EntityProcessingSystem implements ContactL
 
 
 	public void preSolve(Contact contact, Manifold oldManifold) {
-		// TODO Auto-generated method stub
-		
 	}
 
 
 	public void postSolve(Contact contact, ContactImpulse impulse) {
-		// TODO Auto-generated method stub
-		
 	}
 
 }

@@ -8,14 +8,6 @@ public class Position extends BaseComponent {
 	// Real physics world position in meters
 	public float x, y, px, py, r, pr;
 	public float xPixel, yPixel, pxPixel, pyPixel, rDeg, prDeg;
-
-	public Position(){
-		setPosition(0, 0);
-	}
-	
-	public Position(float x, float y){
-		setPosition(x, y);
-	}
 	
 	public Position setRotation(float rad){
 		this.pr = this.r;
@@ -40,6 +32,6 @@ public class Position extends BaseComponent {
 	@Override
 	public String toString() {
 		// TODO Auto-generated method stub
-		return "x="+x+",y="+y;
+		return "X="+x+"|Y="+y;
 	}
 }

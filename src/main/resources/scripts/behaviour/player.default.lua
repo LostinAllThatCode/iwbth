@@ -73,7 +73,7 @@ function doBehaviour()
 end
 
 
-function beginCollision(target)	
+function beginCollision(target)
 end
 
 function endCollision(target)

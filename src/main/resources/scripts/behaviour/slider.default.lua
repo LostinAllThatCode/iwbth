@@ -4,8 +4,8 @@ time = 0
 _sliderDistance = 0
 _sliderTimeTrigger = 0
 _sliderOriginX = 0 
-_sliderSpeed = 5
-_sliderDir = 1
+_sliderSpeed = 0
+_sliderDir = 0
 
 
 function init(t, distance, speed, dir)

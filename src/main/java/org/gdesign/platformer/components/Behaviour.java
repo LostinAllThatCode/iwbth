@@ -19,12 +19,11 @@ public class Behaviour extends Scriptable {
 		jcall("doBehaviour");
 	}
 	
-	public void beginCollision(Entity target){
+	public void beginCollision(Object target){
 		jcall("beginCollision",target);
 	}
 	
-	public void endCollision(Entity target){
+	public void endCollision(Object target){
 		jcall("endCollision",target);
 	}
-
 }
