@@ -9,7 +9,6 @@ import org.gdesign.games.ecs.systems.EntityProcessingSystem;
 import org.gdesign.games.ecs.systems.IntervalEntitySystem;
 import org.gdesign.games.ecs.systems.SingleProcessSystem;
 import org.gdesign.platformer.components.Animatable;
-import org.gdesign.platformer.components.Behaviour;
 import org.gdesign.platformer.components.Physics;
 import org.gdesign.platformer.components.Position;
 import org.gdesign.platformer.core.Constants;
@@ -83,9 +82,7 @@ public class DebugInfoSystem extends SingleProcessSystem {
 					+"Y: " + (int)  (position.y * Constants.BOX_TO_WORLD) + "("+ df.format(position.y) +"m)";
 			
 			text += " F:" + physics.SENSOR_FEET + " L:" + physics.SENSOR_LEFT + " H:" + physics.SENSOR_HEAD + " R:" + physics.SENSOR_RIGHT;
-			text += " FRICTION: " + physics.getBody().getFixtureList().get(0).getFriction();
 			text += " ANIM: " + anim.getCurrentAnimation() + "("+ anim.getRegion() .isFlipX()+ "|"+ anim.getRegion() .isFlipY() + ") T: "+df.format(anim.stateTime);
-			text += " VEL "+ physics.getBody().getLinearVelocity();
 			//text += " BEHAV: " + world.getManager(PlayerManager.class).getPlayer().getComponent(Behaviour.class);
 		} else text += player;
 

@@ -29,6 +29,7 @@ public class Animatable extends Renderable {
 			if (!animations.isEmpty()){
 				currentAnimationString = animations.entrySet().iterator().next().getKey();
 				currentAnimation = animations.get(currentAnimationString);
+				frame = currentAnimation.getKeyFrame(0);
 			}
 		}
 		stateTime = 0f;
@@ -95,5 +96,9 @@ public class Animatable extends Renderable {
 		return frame;
 	}
 	
+	@Override
+	public String toString() {
+		return "regionw="+frame.getRegionWidth()+",regionh="+frame.getRegionHeight()+","+super.toString();
+	}
 	
 }

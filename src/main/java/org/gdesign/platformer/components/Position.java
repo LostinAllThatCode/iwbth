@@ -36,4 +36,10 @@ public class Position extends BaseComponent {
 		this.pyPixel = this.py * Constants.BOX_TO_WORLD;
 		return this;
 	}
+	
+	@Override
+	public String toString() {
+		// TODO Auto-generated method stub
+		return "x="+x+",y="+y;
+	}
 }

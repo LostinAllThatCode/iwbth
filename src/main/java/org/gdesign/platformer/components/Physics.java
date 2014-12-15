@@ -83,5 +83,10 @@ public class Physics extends BaseComponent{
 	public Body getBody() {
 		return body;
 	}
+	
+	@Override
+	public String toString() {
+		return "x="+body.getPosition().x+",y="+body.getPosition().y+",vx="+body.getLinearVelocity().x+",vy="+body.getLinearVelocity().y;
+	}
 
 }

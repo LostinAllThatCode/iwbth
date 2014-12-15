@@ -45,5 +45,10 @@ public class Renderable extends BaseComponent {
 	public TextureRegion getRegion(){
 		return region;
 	}
+	
+	@Override
+	public String toString() {
+		return "w="+texture.getWidth()+",h="+texture.getHeight();
+	}
 
 }

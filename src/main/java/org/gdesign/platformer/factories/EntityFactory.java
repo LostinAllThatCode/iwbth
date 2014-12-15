@@ -8,6 +8,7 @@ import org.gdesign.platformer.components.Behaviour;
 import org.gdesign.platformer.components.Physics;
 import org.gdesign.platformer.components.Position;
 import org.gdesign.platformer.components.Renderable;
+import org.gdesign.platformer.components.Type;
 import org.gdesign.platformer.core.Constants;
 import org.gdesign.platformer.entities.Enemy;
 import org.gdesign.platformer.entities.Player;
@@ -18,7 +19,6 @@ import org.gdesign.platformer.managers.TextureManager;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.badlogic.gdx.utils.JsonValue;
-import com.badlogic.gdx.utils.JsonValue.ValueType;
 
 
 public class EntityFactory {
@@ -38,12 +38,20 @@ public class EntityFactory {
 		JsonValue prototype = val.get("prototypes").get(id);
 		if (prototype != null){
 			Entity entity = world.createEntity();
+			entity.addComponent(new Type(prototype.getString("type")));
+			entity.addComponent(new Position());
 			if (prototype.has("texture")) {
 				JsonValue texture = prototype.get("texture");
 				if (texture.has("json")) {
 					Animatable component = new Animatable(texMan.getTexture(texture.getString("path")), texture.getString("json"));
 					if (texture.has("x") && texture.has("y") && texture.has("width") && texture.has("height") ){
 						component.setRegion( texture.getInt("x"), texture.getInt("y"), texture.getInt("width"), texture.getInt("height"));
+					}
+					if (texture.has("offset_x") || texture.has("offset_y")) {
+						float offset_x=0,offset_y=0;
+						if (texture.has("offset_x")) offset_x = texture.getFloat("offset_x");
+						if (texture.has("offset_y")) offset_y = texture.getFloat("offset_y");
+						component.setOffset(offset_x, offset_y);
 					}
 					entity.addComponent(component);
 				} else {
@@ -90,20 +98,18 @@ public class EntityFactory {
 			}
 			if (prototype.has("physics")) {
 				JsonValue physics = prototype.get("physics");
-				if (prototype.getString("type").equals("player")){
+				if (prototype.getString("type").toLowerCase().equals("player")){
 					entity.addComponent(new Physics(world, x, y, physics.getInt("width"), physics.getInt("height"), BodyType.DynamicBody,
 							Constants.CATEGORY_PLAYER, Constants.MASK_PLAYER, entity));
 					playerMan.setPlayer(entity);
-				} else if (prototype.getString("type").equals("enemy")) {
+				} else if (prototype.getString("type").toLowerCase().equals("enemy")) {
 					entity.addComponent(new Physics(world, x, y, physics.getInt("width"), physics.getInt("height"), BodyType.DynamicBody,
 							Constants.CATEGORY_ENEMY, Constants.MASK_ENEMY, entity));					
-				} else if (prototype.getString("type").equals("slider")) {
+				} else if (prototype.getString("type").toLowerCase().equals("slider")) {
 					entity.addComponent(new Physics(world, x, y, physics.getInt("width"), physics.getInt("height"), BodyType.KinematicBody,
 							Constants.CATEGORY_WORLD, Constants.MASK_WORLD, entity));					
 				}
 			}
-			
-			entity.addComponent(new Position());
 			entity.addToWorld();
 			System.out.println(entity);
 			return entity;

@@ -8,6 +8,7 @@ import org.gdesign.platformer.components.Behaviour;
 import org.gdesign.platformer.components.Physics;
 import org.gdesign.platformer.components.Position;
 import org.gdesign.platformer.core.Constants;
+import org.gdesign.platformer.core.EntityDictionary;
 import org.gdesign.platformer.entities.Enemy;
 import org.gdesign.platformer.entities.Player;
 import org.gdesign.platformer.entities.Slider;
@@ -59,12 +60,11 @@ public class PlatformerTest implements ApplicationListener, InputProcessor {
 		world = new World();
 		
 		EntityFactory.initialize(world);
-		
-		world.setSystem(new CameraSystem());
 		world.setSystem(new SimulationSystem(0, -16.8f));
+		world.setSystem(new CameraSystem());		
 		world.setSystem(new TextureRenderSystem());
 		world.setSystem(new AnimationRenderSystem());
-		world.setSystem(new LightSimulationSystem());
+		//world.setSystem(new LightSimulationSystem());
 		world.setSystem(new DebugInfoSystem());	
 		
 		pMan = world.getManager(PlayerManager.class);
@@ -84,11 +84,9 @@ public class PlatformerTest implements ApplicationListener, InputProcessor {
 		.addComponent(new Physics(world,1200, 0, 2, 1200,BodyType.StaticBody,Constants.CATEGORY_WORLD,Constants.MASK_WORLD,wallRight))
 		.addToWorld();
 
-		EntityFactory.createEntityById(250, 50, 0);
-		EntityFactory.createEntityById(400, 50, 1);
-		EntityFactory.createEntityById(250, 200, 2);
-		//world.getManager(PlayerManager.class).getPlayer().getComponent(Behaviour.class).setScript("scripts/control/testMov.lua");
-		
+		EntityFactory.createEntityById(250, 50, EntityDictionary.PLAYER);
+		EntityFactory.createEntityById(400, 50, EntityDictionary.PLAYER_MIRROR);
+		EntityFactory.createEntityById(250, 100, EntityDictionary.SLIDER);		
 	}
  
 	public void dispose() {
